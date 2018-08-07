@@ -9,4 +9,5 @@ public class Branch {
     String state;
     String Type;
 
+
 }

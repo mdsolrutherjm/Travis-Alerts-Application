@@ -49,8 +49,8 @@ public class MainService {
         headers.set("User-Agent", "application/API Explorer");
         HttpEntity entity = new HttpEntity(headers);
 
-        ResponseEntity response = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, String.class);
 
-        return response.toString();
+        return response.getBody();
     }
 }

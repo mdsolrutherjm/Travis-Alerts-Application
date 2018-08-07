@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Branch {
     String name;
-    String state;
-    String Type;
+    boolean exists_on_github;
+    String default_branch;
+    Object repository;
+    Object last_build;
 
 
 }

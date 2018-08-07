@@ -2,6 +2,7 @@ package intern.project.travisalerts;
 
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -27,10 +28,21 @@ public class MainService {
 
     public MainService()
     {
-        System.out.println(getAPIStringResponse());
+        try
+        {
+            System.out.println(getAPIStringResponse());
+
+        }
+        catch(HttpClientErrorException e)
+        {
+            /**
+             * getApiStringResponse() returns client error if the content is unavailable. check for this when we put it in a loop.
+             */
+            System.out.println("Resource Unavailable.");
+        }
 
     }
-    public String getAPIStringResponse()
+    public String getAPIStringResponse() throws HttpClientErrorException
     {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();

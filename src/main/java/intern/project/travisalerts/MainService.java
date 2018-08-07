@@ -1,16 +1,11 @@
 package intern.project.travisalerts;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class MainService {
@@ -31,7 +26,6 @@ public class MainService {
         try
         {
             System.out.println(getAPIStringResponse());
-
         }
         catch(HttpClientErrorException e)
         {
@@ -40,8 +34,9 @@ public class MainService {
              */
             System.out.println("Resource Unavailable.");
         }
-
     }
+
+    @Bean
     public String getAPIStringResponse() throws HttpClientErrorException
     {
         RestTemplate restTemplate = new RestTemplate();
@@ -52,7 +47,7 @@ public class MainService {
          * must be an ID for now (look at later?)
          */
         UriComponents uri = UriComponentsBuilder
-                .fromHttpUrl("https://api.travis-ci.com/repo/{repoName}/branch/{branchname}")
+                .fromHttpUrl(REPO_URL)
                 .buildAndExpand(REPO_IDENTIFIER, BRANCH_NAME);
 
         //Set Headers for request.

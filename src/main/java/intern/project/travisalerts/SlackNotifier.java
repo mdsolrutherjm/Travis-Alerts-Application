@@ -1,25 +1,29 @@
 package intern.project.travisalerts;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
-
-
 public class SlackNotifier {
     private final String PASSED_COLOUR = "#36a64f";
     private final String FAILED_COLOUR = "#ff0000";
     private final String SLACK_API = "https://hooks.slack.com/services/{room}";
-    private final String SLACK_ROOM = "T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy";
+    private String slackRoom;
 
+    /**
+     * @param room the room ID
+     */
+    public SlackNotifier(String room)
+    {
+        this.slackRoom = room;
+    }
+
+    //Template for the passed/failed build description (to go within the template)
+    private final String DESCRIPTION = "Build #%d %s (%s, %s)\n%s@%s";
     //Template for the passed/failed build messages.
     private final String BUILD_TEMPLATE = "{\n" +
             "    \"attachments\": [\n" +
@@ -37,10 +41,6 @@ public class SlackNotifier {
             "        }\n" +
             "    ]\n" +
             "}";
-    //Template for the passed/failed build description (to go within the template)
-    private final String DESCRIPTION = "Build #%d %s (%s, %s)\n%s@%s";
-
-
     /**
      * Sends a properly formatted build failure message to the pre-set Slack channel.
      */
@@ -48,7 +48,7 @@ public class SlackNotifier {
         String failedDescription = String.format(DESCRIPTION, buildID, "failed", by, time, slug, branch);
 
         String json = String.format(BUILD_TEMPLATE, buildURL,FAILED_COLOUR, failedDescription, buildURL);
-        sendMsg(json);
+        sendJson(json);
     }
 
     /**
@@ -58,7 +58,7 @@ public class SlackNotifier {
         String passedDescription = String.format(DESCRIPTION, buildID, "passed", by, time, slug, branch);
 
         String json = String.format(BUILD_TEMPLATE, buildURL,PASSED_COLOUR, passedDescription, buildURL);
-        sendMsg(json);
+        sendJson(json);
     }
 
     /**
@@ -67,7 +67,7 @@ public class SlackNotifier {
      */
     public void sendText(String text)
     {
-        sendMsg("{\'text\':\'" + text + "\'}");
+        sendJson("{\'text\':\'" + text + "\'}");
     }
 
     /**
@@ -76,13 +76,13 @@ public class SlackNotifier {
      * @throws HttpClientErrorException throws this if some kind of failure occurs (e.g. 404).
      */
     @Bean
-    public void sendMsg(String json) throws HttpClientErrorException
+    public void sendJson(String json) throws HttpClientErrorException
     {
         RestTemplate restTemplate = new RestTemplate();
 
         UriComponents uri = UriComponentsBuilder
                 .fromHttpUrl(SLACK_API)
-                .buildAndExpand(SLACK_ROOM);
+                .buildAndExpand(slackRoom);
 
 
         HttpEntity<String> request = new HttpEntity<>(json);

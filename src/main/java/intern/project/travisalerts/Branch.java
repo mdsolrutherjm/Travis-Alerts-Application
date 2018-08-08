@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Branch {
     String name;
     boolean exists_on_github;
-    String default_branch;
-    Object repository;
-    Object last_build;
+    String defaultBranch;
+    Repository repository;
+    LastBuild lastBuild;
+
+
 
 
 }

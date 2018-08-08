@@ -15,38 +15,58 @@ public class MainService implements Runnable {
     //--- REPO AND BRANCH TO POLL.
     private String repoIdentifier;
     private String branchName;
-    private long pollMs;
+    private long pollMs = 0;
+    private boolean isRepeating = false;
+
     //AUTHORISATION
     static Map<String, String> env = System.getenv();
-
     private static final String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
+
+    //SLACK ROOM.
+    SlackNotifier notify;
 
     /**
      * constructor
      * @param repo the ID/Slug of the repo to poll.
      * @param branch the name of the branch to poll.
      */
-    public MainService(String repo, String branch, long pollMin)
+    public MainService(String repo, String branch, String slackRoom)
+    {
+        this.repoIdentifier = repo;
+        this.branchName = branch;
+        isRepeating = false;
+        notify = new SlackNotifier(slackRoom);
+    }
+    /**
+     * constructor
+     * @param repo the ID/Slug of the repo to poll.
+     * @param branch the name of the branch to poll.
+     * @param pollMin cool-down between polls.
+     */
+    public MainService(String repo, String branch, long pollMin, String slackRoom)
     {
         this.repoIdentifier = repo;
         this.branchName = branch;
         this.pollMs = (pollMin * 60000);
+        isRepeating = true;
+        notify = new SlackNotifier(slackRoom);
     }
 
     public void run()
     {
-        while (true)
+        boolean running = true;
+        while (running)
         {
+            running = isRepeating;
             try
             {
-                System.out.println(getAPIStringResponse(repoIdentifier, branchName));
+                notify.sendText(getAPIStringResponse(repoIdentifier, branchName));
             }
             catch(HttpClientErrorException e)
             {
                 /**
                  * getApiStringResponse() returns client error if the content is unavailable. check for this when we put it in a loop.
                  */
-                System.out.println("Resource Unavailable.");
             }
             try
             {
@@ -54,11 +74,12 @@ public class MainService implements Runnable {
             }
             catch(InterruptedException e)
             {
+                System.out.println("FATAL: Thread Interrupted during cool-off period. Terminating...");
+                System.exit(1);
             }
         }
 
     }
-
 
     @Bean
     public String getAPIStringResponse(String repo, String branch) throws HttpClientErrorException

@@ -9,8 +9,8 @@ public class TravisAlertsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TravisAlertsApplication.class, args);
 
-		MainService mainSvc = new MainService();
+	Thread pollingSvc = new Thread(new MainService("3521753", "develop", 30));
+		pollingSvc.start();
 
-		//Thread blocking/unblocking functionality
 	}
 }

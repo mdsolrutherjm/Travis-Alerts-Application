@@ -8,36 +8,60 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 
-public class MainService {
+public class MainService implements Runnable {
     //--- API ADDRESS.
     private static final String REPO_URL = "https://api.travis-ci.com/repo/{repoName}/branch/{branchname}";
 
     //--- REPO AND BRANCH TO POLL.
-    private static final String REPO_IDENTIFIER = "3521753";
-    private static final String BRANCH_NAME = "develop";
-
+    private String repoIdentifier;
+    private String branchName;
+    private long pollMs;
     //AUTHORISATION
     static Map<String, String> env = System.getenv();
 
     private static final String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
 
-    public MainService()
+    /**
+     * constructor
+     * @param repo the ID/Slug of the repo to poll.
+     * @param branch the name of the branch to poll.
+     */
+    public MainService(String repo, String branch, long pollMin)
     {
-        try
-        {
-            System.out.println(getAPIStringResponse());
-        }
-        catch(HttpClientErrorException e)
-        {
-            /**
-             * getApiStringResponse() returns client error if the content is unavailable. check for this when we put it in a loop.
-             */
-            System.out.println("Resource Unavailable.");
-        }
+        this.repoIdentifier = repo;
+        this.branchName = branch;
+        this.pollMs = (pollMin * 60000);
     }
 
+    public void run()
+    {
+        while (true)
+        {
+            try
+            {
+                System.out.println(getAPIStringResponse(repoIdentifier, branchName));
+            }
+            catch(HttpClientErrorException e)
+            {
+                /**
+                 * getApiStringResponse() returns client error if the content is unavailable. check for this when we put it in a loop.
+                 */
+                System.out.println("Resource Unavailable.");
+            }
+            try
+            {
+                Thread.sleep(pollMs);
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+
+    }
+
+
     @Bean
-    public String getAPIStringResponse() throws HttpClientErrorException
+    public String getAPIStringResponse(String repo, String branch) throws HttpClientErrorException
     {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -48,7 +72,7 @@ public class MainService {
          */
         UriComponents uri = UriComponentsBuilder
                 .fromHttpUrl(REPO_URL)
-                .buildAndExpand(REPO_IDENTIFIER, BRANCH_NAME);
+                .buildAndExpand(repo, branch);
 
         //Set Headers for request.
         headers.set("Authorization", "token " + TRAVIS_AUTH_TOKEN);

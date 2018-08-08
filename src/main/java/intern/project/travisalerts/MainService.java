@@ -10,15 +10,15 @@ import java.util.Map;
 
 public class MainService implements Runnable {
     //--- API ADDRESS.
-    private static final String REPO_URL = "https://api.travis-ci.com/repo/{repoName}/branch/{branchname}";
+    private static final String REPO_URL = "https://api.travis-ci.com/repo/{repoName}/branch/{branchName}";
 
     //--- REPO AND BRANCH TO POLL.
     private String repoIdentifier;
     private String branchName;
     private long pollMs = 0;
-    private boolean isRepeating = false;
+    private boolean isRepeating;
 
-    //AUTHORISATION
+    //AUTHORIZATION
     static Map<String, String> env = System.getenv();
     private static final String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
 

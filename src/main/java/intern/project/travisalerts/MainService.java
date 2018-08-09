@@ -26,7 +26,7 @@ public class MainService implements Runnable {
     SlackNotifier slackAPI;
 
     /**
-     * constructor
+     * For non-repeating polling.
      * @param repo the ID/Slug of the repo to poll.
      * @param branch the name of the branch to poll.
      */
@@ -38,7 +38,7 @@ public class MainService implements Runnable {
         slackAPI = slack;
     }
     /**
-     * constructor
+     * For repeating polling.
      * @param repo the ID/Slug of the repo to poll.
      * @param branch the name of the branch to poll.
      * @param pollMin cool-down between polls.

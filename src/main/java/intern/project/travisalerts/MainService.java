@@ -1,11 +1,15 @@
 package intern.project.travisalerts;
 
+import com.sun.javafx.fxml.builder.URLBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 public class MainService implements Runnable {
@@ -94,9 +98,19 @@ public class MainService implements Runnable {
          * REPO_IDENTIFIER currently cannot be the repo slug as it will return a 404 not found.
          * must be an ID for now (look at later?)
          */
-        UriComponents uri = UriComponentsBuilder
-                .fromHttpUrl(REPO_URL)
-                .buildAndExpand(repo, branch);
+
+        String repoEncoded = "";
+        try
+        {
+            repoEncoded = URLEncoder.encode("mdsol/study_management", "UTF-8");
+
+        }
+        catch (UnsupportedEncodingException e){}
+
+
+        UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl("https://api.travis-ci.com").path("/repo/" + repoEncoded+"/branch/develop");
+        UriComponents components = uri.build(true);
+
 
         //Set Headers for request.
         headers.set("Authorization", "token " + TRAVIS_AUTH_TOKEN);
@@ -104,7 +118,7 @@ public class MainService implements Runnable {
         headers.set("User-Agent", "application/API Explorer");
         HttpEntity entity = new HttpEntity(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(components.toUri(), HttpMethod.GET, entity, String.class);
 
         return response.getBody();
     }

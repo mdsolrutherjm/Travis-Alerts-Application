@@ -23,19 +23,19 @@ public class MainService implements Runnable {
     private static final String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
 
     //SLACK ROOM.
-    SlackNotifier notify;
+    SlackNotifier slackAPI;
 
     /**
      * constructor
      * @param repo the ID/Slug of the repo to poll.
      * @param branch the name of the branch to poll.
      */
-    public MainService(String repo, String branch, String slackRoom)
+    public MainService(String repo, String branch, SlackNotifier slack)
     {
         this.repoIdentifier = repo;
         this.branchName = branch;
         isRepeating = false;
-        notify = new SlackNotifier(slackRoom);
+        slackAPI = slack;
     }
     /**
      * constructor
@@ -43,13 +43,13 @@ public class MainService implements Runnable {
      * @param branch the name of the branch to poll.
      * @param pollMin cool-down between polls.
      */
-    public MainService(String repo, String branch, long pollMin, String slackRoom)
+    public MainService(String repo, String branch, long pollMin, SlackNotifier slack)
     {
         this.repoIdentifier = repo;
         this.branchName = branch;
         this.pollMs = (pollMin * 60000);
         isRepeating = true;
-        notify = new SlackNotifier(slackRoom);
+        slackAPI = slack;
     }
 
     public void run()
@@ -60,7 +60,7 @@ public class MainService implements Runnable {
             running = isRepeating;
             try
             {
-                notify.sendText(getAPIStringResponse(repoIdentifier, branchName));
+                slackAPI.sendText(getAPIStringResponse(repoIdentifier, branchName));
             }
             catch(HttpClientErrorException e)
             {

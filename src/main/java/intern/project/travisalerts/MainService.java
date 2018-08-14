@@ -60,6 +60,9 @@ public class MainService implements Runnable {
             running = isRepeating;
             try
             {
+                //String JsonObject = getAPIStringResponse(repoIdentifier, branchName);
+//                Branch branch = JsonUtils.deserializeJson(JsonObject);
+//                System.out.println(branch.name);
                 slackAPI.sendText(getAPIStringResponse(repoIdentifier, branchName));
             }
             catch(HttpClientErrorException e)

@@ -14,12 +14,13 @@ public class TravisAlertsApplication {
 		//creating a every-1-min poll for study_management develop branch.
         String repo = "3521753";
         String branch = "develop";
-        int pollMin = 1;
+        int pollMin = 30;
         String room = "T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy";
 
 
 Thread pollingSvc = new Thread(new MainService(repo, branch, pollMin, new SlackNotifier(room)));
 		pollingSvc.start();
+
 	}
 
 	public static void loadPolling() {

@@ -74,6 +74,7 @@ public class MainService implements Runnable {
                 /**
                  * getApiStringResponse() returns client error if the content is unavailable. check for this when we put it in a loop.
                  */
+                System.out.println(repoIdentifier + branchName + "\n" + e);
             }
             try
             {

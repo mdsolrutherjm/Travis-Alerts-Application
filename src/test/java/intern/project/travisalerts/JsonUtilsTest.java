@@ -9,6 +9,9 @@ public class JsonUtilsTest {
     public void testShouldCreateBranchFromJson(){
 
         String inputJson = "{\n" +
+                "  \"@type\": \"branch\",\n" +
+                "  \"@href\": \"/repo/3521753/branch/develop\",\n" +
+                "  \"@representation\": \"standard\",\n" +
                 "  \"name\": \"develop\",\n" +
                 "  \"repository\": {\n" +
                 "    \"@type\": \"repository\",\n" +
@@ -54,7 +57,9 @@ public class JsonUtilsTest {
         assertEquals("study_management", branch.repository.name );
         assertEquals("/repo/3521753", branch.repository.href);
         assertEquals("minimal",branch.repository.representation);
-//        assertEquals(2018-08-08T09:52:48Z, branch.lastBuild.finished_at);
+        assertEquals("branch", branch.type);
+        assertEquals("/repo/3521753/branch/develop", branch.href);
+        assertEquals("standard", branch.representation);
 
 
     }

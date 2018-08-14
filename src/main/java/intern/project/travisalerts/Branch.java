@@ -7,6 +7,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import sun.applet.Main;
 
 public class Branch {
+    @JsonProperty("@type")
+    String type;
+    @JsonProperty("@href")
+    String href;
+    @JsonProperty("@representation")
+    String representation;
     @JsonProperty("name")
     String name;
     @JsonProperty("exists_on_github")

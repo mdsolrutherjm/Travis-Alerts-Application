@@ -9,13 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 public class Repository {
-//    String type;
-//    String href;
-//    String representation;
-//    int id;
+    @JsonProperty("@type")
+    String type;
+    @JsonProperty("@href")
+    String href;
+    @JsonProperty("@representation")
+    String representation;
+    @JsonProperty
+    int id;
     @JsonProperty
     String name;
-//    String slug;
+    @JsonProperty
+    String slug;
 
 //    @JsonCreator
 //    public Repository(

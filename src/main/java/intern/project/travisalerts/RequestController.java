@@ -27,6 +27,7 @@ public class RequestController implements Runnable {
     public void pollNewBranch(WebRequest request)
     {
         System.out.println("Poll new branch request for " + request.getParameter("text"));
+
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
         Thread pollingSvc = new Thread(new MainService(parameter[0], parameter[1], slackAPI));

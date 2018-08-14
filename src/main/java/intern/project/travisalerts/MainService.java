@@ -60,7 +60,10 @@ public class MainService implements Runnable {
             running = isRepeating;
             try
             {
-                notify.sendText(getAPIStringResponse(repoIdentifier, branchName));
+                String inputJson = getAPIStringResponse(repoIdentifier, branchName);
+                Branch branch = JsonUtils.deserializeJson(inputJson);
+                System.out.println("State of latest build: "+branch.lastBuild.state);
+                notify.sendText("State of latest build: "+branch.lastBuild.state);
             }
             catch(HttpClientErrorException e)
             {

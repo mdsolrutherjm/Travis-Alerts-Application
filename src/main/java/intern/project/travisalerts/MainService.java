@@ -94,23 +94,16 @@ public class MainService implements Runnable {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
-        /**
-         * REPO_IDENTIFIER currently cannot be the repo slug as it will return a 404 not found.
-         * must be an ID for now (look at later?)
-         */
-
-        String repoEncoded = "";
         try
         {
-            repoEncoded = URLEncoder.encode("mdsol/study_management", "UTF-8");
+            repo = URLEncoder.encode(repo, "UTF-8");
+            branch = URLEncoder.encode(branch, "UTF-8");
 
         }
         catch (UnsupportedEncodingException e){}
 
-
-        UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl("https://api.travis-ci.com").path("/repo/" + repoEncoded+"/branch/develop");
+        UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl("https://api.travis-ci.com").path("/repo/" + repo +"/branch/" + branch);
         UriComponents components = uri.build(true);
-
 
         //Set Headers for request.
         headers.set("Authorization", "token " + TRAVIS_AUTH_TOKEN);

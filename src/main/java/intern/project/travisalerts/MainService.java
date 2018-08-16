@@ -60,10 +60,18 @@ public class MainService implements Runnable {
             running = isRepeating;
             try
             {
-                //String JsonObject = getAPIStringResponse(repoIdentifier, branchName);
-//                Branch branch = JsonUtils.deserializeJson(JsonObject);
-//                System.out.println(branch.name);
-                slackAPI.sendText(getAPIStringResponse(repoIdentifier, branchName));
+                String JsonObject = getAPIStringResponse(repoIdentifier, branchName);
+                Branch branch = JsonUtils.deserializeJson(JsonObject);
+                String buildURLTemplate = "https://travis-ci.com/%s/builds/%d";
+                String branchURL = String.format(buildURLTemplate, branch.repository.slug, branch.lastBuild.id);
+                if (branch.lastBuild.state.equals("passed")) {
+                    slackAPI.sendPassed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL );
+                }
+                else if (branch.lastBuild.state.equals("failed")) {
+                    slackAPI.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL);
+                }
+
+
             }
             catch(HttpClientErrorException e)
             {

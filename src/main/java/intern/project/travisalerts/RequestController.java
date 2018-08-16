@@ -65,6 +65,7 @@ public class RequestController implements Runnable {
     public void startpolling(WebRequest request)
     {
         slackAPI.sendText("Not yet implemented :(\nNo method yet exists for startpolling. ");
+
     }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO

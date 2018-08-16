@@ -12,14 +12,15 @@ public class TravisAlertsApplication {
 		SpringApplication.run(TravisAlertsApplication.class, args);
 
         Scanner inputListener = new Scanner(System.in);
-        String input = "";
+        String arg0,arg1,arg2,arg3 = "";
+
         loadPolling();
 
 		while (programState)
         {
             System.out.print("Travis Alerts > ");
-            input = inputListener.next();
-            switch(input)
+            arg0 = inputListener.next();
+            switch(arg0)
             {
                 case "exit":
                     System.exit(0);
@@ -27,6 +28,18 @@ public class TravisAlertsApplication {
                 case "help":
                     help();
                     break;
+                case "addbranch":
+                    arg1 = inputListener.next(); //repo
+                    arg2 = inputListener.next(); //branch
+                    System.out.println("Slack Channel Link > ");
+                    arg3 = inputListener.next();
+
+                    break;
+                case "deletebranch":
+                    arg1 = inputListener.next(); //repo
+                    arg2 = inputListener.next(); //branch
+                    break;
+
 
             }
         }
@@ -48,7 +61,6 @@ public class TravisAlertsApplication {
         String branch = "develop";
         int pollMin = 30;
         String room = "T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy";
-
 
         Thread pollingSvc = new Thread(new MainService(repo, branch, pollMin, new SlackNotifier(room)));
         pollingSvc.start();

@@ -2,6 +2,7 @@ package intern.project.travisalerts;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Scanner;
 
@@ -27,6 +28,26 @@ public class TravisAlertsApplication {
                     break;
                 case "help":
                     help();
+                    break;
+                case "rawJson":
+                    arg1 = inputListener.next(); //repo
+                    arg2 = inputListener.next(); //branch
+                    try
+                    {
+                        MainService ms = new MainService(arg1, arg2, new SlackNotifier("T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy"));
+                        System.out.println(ms.getAPIStringResponse(arg1, arg2));
+
+                    }
+                    catch (HttpClientErrorException e)
+                    {
+                        System.out.println(e);
+                    }
+                    break;
+                case "slack":
+                    arg1 = inputListener.next(); //slack link
+                    arg2 = inputListener.next(); //text
+                    SlackNotifier sn = new SlackNotifier(arg1);
+                    sn.sendText(arg2);
                     break;
                 case "addbranch":
                     arg1 = inputListener.next(); //repo

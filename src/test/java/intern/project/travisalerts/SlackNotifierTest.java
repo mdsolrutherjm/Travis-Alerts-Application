@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @SpringBootTest
 public class SlackNotifierTest {
 
-    SlackNotifier sf = new SlackNotifier("T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy");
+    SlackNotifier sf = new SlackNotifier( "https://hooks.slack.com/services/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");
     @Test
     public void sendsMessage()
     {

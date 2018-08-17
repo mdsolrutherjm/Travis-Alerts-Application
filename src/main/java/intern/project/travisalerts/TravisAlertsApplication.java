@@ -4,10 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Map;
 import java.util.Scanner;
 
 @SpringBootApplication
 public class TravisAlertsApplication {
+    //AUTHORIZATION
+    static Map<String, String> env = System.getenv();
+    private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
     static boolean programState = true;
 	public static void main(String[] args) {
 		SpringApplication.run(TravisAlertsApplication.class, args);
@@ -34,7 +38,7 @@ public class TravisAlertsApplication {
                     arg2 = inputListener.next(); //branch
                     try
                     {
-                        MainService ms = new MainService(arg1, arg2, new SlackNotifier("T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy"));
+                        MainService ms = new MainService(arg1, arg2, new SlackNotifier("https://hooks.slack.com/services/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"));
                         System.out.println(ms.getAPIStringResponse(arg1, arg2));
 
                     }
@@ -42,6 +46,9 @@ public class TravisAlertsApplication {
                     {
                         System.out.println(e);
                     }
+                    break;
+                case "system":
+                    System.out.println("Using Travis Token " + TRAVIS_AUTH_TOKEN);
                     break;
                 case "slack":
                     arg1 = inputListener.next(); //slack link
@@ -81,7 +88,7 @@ public class TravisAlertsApplication {
         String repo = "3521753";
         String branch = "develop";
         int pollMin = 30;
-        String room = "T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy";
+        String room = "https://hooks.slack.com/services/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\"";
 
         Thread pollingSvc = new Thread(new MainService(repo, branch, pollMin, new SlackNotifier(room)));
         pollingSvc.start();

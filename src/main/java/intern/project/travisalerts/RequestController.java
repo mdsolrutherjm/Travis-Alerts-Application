@@ -4,6 +4,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+
 @RestController
 @RequestMapping("/command")
 public class RequestController implements Runnable {
@@ -13,7 +16,7 @@ public class RequestController implements Runnable {
      * use of slacknotifier should be temporary????? should response using the response_url method instead once we are actually
      * having this hosted.
      */
-    SlackNotifier slackAPI = new SlackNotifier("T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy");
+    SlackNotifier slackAPI = new SlackNotifier( "https://hooks.slack.com/services/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");
 
     public void run(){}
 
@@ -21,9 +24,17 @@ public class RequestController implements Runnable {
     public void getStatus(WebRequest request)
     {
         slackAPI.sendText("Not yet implemented :(\nNo method yet exists for getstatus. ");
-
     }
-
+    @RequestMapping(value ="/debug")
+    public void debug(WebRequest request)
+    {
+        SlackNotifier sn = new SlackNotifier(request.getParameter("response_url"));
+        Iterator<String> params = request.getParameterNames();
+        while(params.hasNext()){
+            String paramName = params.next();
+            sn.sendText("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
+        }
+    }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO
      * 1) there's no input validation for the parameters that we're dealing with here.

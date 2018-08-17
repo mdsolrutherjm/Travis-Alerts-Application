@@ -24,7 +24,7 @@ public class MainService implements Runnable {
 
     //AUTHORIZATION
     static Map<String, String> env = System.getenv();
-    private static final String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
+    private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
 
     //SLACK ROOM.
     SlackNotifier slackAPI;

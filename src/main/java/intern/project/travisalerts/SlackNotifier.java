@@ -12,7 +12,7 @@ public class SlackNotifier {
     private final String PASSED_COLOUR = "#36a64f";
     private final String FAILED_COLOUR = "#ff0000";
     private final String SLACK_API = "https://hooks.slack.com/services/{room}";
-    private String slackRoom;
+    public String slackRoom;
 
     /**
      * @param room the room ID

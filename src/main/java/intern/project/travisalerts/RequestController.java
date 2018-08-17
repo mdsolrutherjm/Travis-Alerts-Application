@@ -36,9 +36,15 @@ public class RequestController implements Runnable {
     public void addbranch(WebRequest request)
     {
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
-        slackAPI.sendText("Added " + parameter[0] + "/" +  parameter[1]);
+        slackAPI.sendText("Added " + parameter[0] + "/" +  parameter[1]); //parameter[0] = repo, parameter[1] = branch
         Thread pollingSvc = new Thread(new MainService(parameter[0], parameter[1], slackAPI));
         pollingSvc.start();
+
+        /**
+         * INITIAL CODE FOR ChannelRepo.create_channel_record()
+         * String room = slackAPI.slackRoom;
+         * ChannelRepo.create_channel_record(parameter[0], parameter[1], room)
+         */
     }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO

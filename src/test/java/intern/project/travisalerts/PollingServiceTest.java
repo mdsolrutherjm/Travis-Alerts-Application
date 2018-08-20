@@ -12,7 +12,7 @@ public class PollingServiceTest {
         String repo = "mdsol/study_management";
         String branch = "develop";
         int pollMin = 1;
-        String room = "T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy";
+        String room =  "https://hooks.slack.com/services/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";
 
         MainService ms = new MainService(repo, branch, new SlackNotifier(room));
         System.out.println(ms.getAPIStringResponse(repo,branch));
@@ -23,7 +23,7 @@ public class PollingServiceTest {
         String repo = "mdsol/phoenix";
         String branch = "release/2018.2.1";
         int pollMin = 1;
-        String room = "T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy";
+        String room =  "https://hooks.slack.com/services/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";
 
         MainService ms = new MainService(repo, branch, new SlackNotifier(room));
         System.out.println(ms.getAPIStringResponse(repo,branch));
@@ -34,7 +34,7 @@ public class PollingServiceTest {
         String repo = "mdsol/ract_ui";
         String branch = "codacy-integration";
         int pollMin = 1;
-        String room = "T2BJH134Y/BC1JWUXUJ/wTCZ5YYFrTbe6D9OQVpKGBQy";
+        String room = "https://hooks.slack.com/services/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";
 
         MainService ms = new MainService(repo, branch, new SlackNotifier(room));
         System.out.println(ms.getAPIStringResponse(repo,branch));

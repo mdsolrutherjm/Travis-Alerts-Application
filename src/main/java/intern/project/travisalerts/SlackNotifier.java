@@ -11,15 +11,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class SlackNotifier {
     private final String PASSED_COLOUR = "#36a64f";
     private final String FAILED_COLOUR = "#ff0000";
-    private final String SLACK_API = "https://hooks.slack.com/services/{room}";
-    private String slackRoom;
+    private String URL;
 
-    /**
-     * @param room the room ID
-     */
-    public SlackNotifier(String room)
+
+    public SlackNotifier(String url)
     {
-        this.slackRoom = room;
+        this.URL = url;
     }
 
     //Template for the passed/failed build description (to go within the template)
@@ -80,12 +77,9 @@ public class SlackNotifier {
     {
         RestTemplate restTemplate = new RestTemplate();
 
-        UriComponents uri = UriComponentsBuilder
-                .fromHttpUrl(SLACK_API)
-                .buildAndExpand(slackRoom);
 
 
         HttpEntity<String> request = new HttpEntity<>(json);
-        restTemplate.exchange(uri.toString(), HttpMethod.POST, request, String.class);
+        restTemplate.exchange(URL, HttpMethod.POST, request, String.class);
     }
 }

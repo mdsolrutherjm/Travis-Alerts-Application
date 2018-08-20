@@ -61,5 +61,36 @@ public class JsonUtilsTest {
 
 
     }
+    @Test
+    public void testReadingSlackAuth()
+    {
+        String inputJson = "{\n" +
+                "    \"ok\": true,\n" +
+                "    \"access_token\": \"xoxp-79629037168-389640243568-409400601460-b8a2c9cb11e2bf61f711ac8434707071\",\n" +
+                "    \"scope\": \"identify,commands,incoming-webhook\",\n" +
+                "    \"user_id\": \"UBFJU75GQ\",\n" +
+                "    \"team_name\": \"mdsol\",\n" +
+                "    \"team_id\": \"T2BJH134Y\",\n" +
+                "    \"incoming_webhook\": {\n" +
+                "        \"channel\": \"travis-project-test\",\n" +
+                "        \"channel_id\": \"GC2U8DMFY\",\n" +
+                "        \"configuration_url\": \"https://mdsol.slack.com/services/BCACVMU8J\",\n" +
+                "        \"url\": \"https://hooks.slack.com/services/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\"\n" +
+                "    }\n" +
+                "}";
+        SlackAuthJSON sa = JsonUtils.deserializeSlackAuth(inputJson);
+        assertEquals(true, sa.ok);
+        assertEquals("xoxp-79629037168-389640243568-409400601460-b8a2c9cb11e2bf61f711ac8434707071", sa.accessToken);
+        assertEquals("identify,commands,incoming-webhook", sa.scope);
+        assertEquals("UBFJU75GQ", sa.user_id);
+        assertEquals("mdsol", sa.teamName);
+        assertEquals("T2BJH134Y",sa.teamID);
+        assertEquals("travis-project-test", sa.incomingWebhook.channel);
+        assertEquals("GC2U8DMFY", sa.incomingWebhook.channelID);
+        assertEquals("https://mdsol.slack.com/services/BCACVMU8J", sa.incomingWebhook.configurationURL);
+        assertEquals("https://hooks.slack.com/services/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", sa.incomingWebhook.channelURL);
+
+
+    }
 
 }

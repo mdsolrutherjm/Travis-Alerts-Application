@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class TravisAlertsApplication {
+    public static DataController dc = new DataController();
     //AUTHORIZATION
     static Map<String, String> env = System.getenv();
     private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
@@ -78,6 +79,7 @@ public class TravisAlertsApplication {
     {
         System.out.println("Commands: \n");
     }
+
 	public static void loadPolling() {
         System.out.println("Loading configuration");
 
@@ -85,12 +87,5 @@ public class TravisAlertsApplication {
         //Extract information
         //Start new threads accordingly
         //creating a every-1-min poll for study_management develop branch.
-        String repo = "3521753";
-        String branch = "develop";
-        int pollMin = 30;
-        String room = "https://hooks.slack.com/services/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\"";
-
-        Thread pollingSvc = new Thread(new MainService(repo, branch, pollMin, new SlackNotifier(room)));
-        pollingSvc.start();
     }
 }

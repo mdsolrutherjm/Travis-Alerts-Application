@@ -17,6 +17,7 @@ public class SlackNotifier {
     public SlackNotifier(String url)
     {
         this.URL = url;
+        System.out.println("New Slack Notifier Object" + url);
     }
 
     //Template for the passed/failed build description (to go within the template)

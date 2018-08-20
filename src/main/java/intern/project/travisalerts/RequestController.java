@@ -57,6 +57,7 @@ public class RequestController implements Runnable {
 
         new SlackNotifier(channelURL).sendText("Set to poll " + repo + " " + branch);
         Thread t = new Thread(new MainService(repo, branch, new SlackNotifier(TravisAlertsApplication.dc.getChannelURL(channelID))));
+        t.start();
     }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO

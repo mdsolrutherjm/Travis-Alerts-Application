@@ -55,6 +55,7 @@ public class MainService implements Runnable {
 
     public void run()
     {
+        slackAPI.sendText("Commencing polling " + this.repoIdentifier + " " + this.branchName);
         boolean running = true;
         while (running)
         {

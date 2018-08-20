@@ -7,12 +7,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SlackNotifierTest {
-
-    SlackNotifier sf = new SlackNotifier( "https://hooks.slack.com/services/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");
+    static Map<String, String> env = System.getenv();
+    SlackNotifier sf = new SlackNotifier( env.get("SLACK_DEBUG_CHANNEL"));
     @Test
     public void sendsMessage()
     {

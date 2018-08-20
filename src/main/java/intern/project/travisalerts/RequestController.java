@@ -1,5 +1,6 @@
 package intern.project.travisalerts;
 
+import com.sun.media.jfxmediaimpl.MetadataParserImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
@@ -46,10 +47,16 @@ public class RequestController implements Runnable {
     @RequestMapping(value ="/addbranch", consumes = CONSUMES)
     public void addbranch(WebRequest request)
     {
+        String channelID = request.getParameter("channel_id");
+        String channelURL = request.getParameter("response_url");
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
-        slackAPI.sendText("Added " + parameter[0] + "/" +  parameter[1]);
-        Thread pollingSvc = new Thread(new MainService(parameter[0], parameter[1], slackAPI));
-        pollingSvc.start();
+
+        String repo = parameter[0];
+        String branch = parameter[1];
+
+
+        new SlackNotifier(channelURL).sendText("Set to poll " + repo + " " + branch);
+        Thread t = new Thread(new MainService(repo, branch, new SlackNotifier(TravisAlertsApplication.dc.getChannelURL(channelID))));
     }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO

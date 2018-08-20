@@ -13,9 +13,6 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 public class MainService implements Runnable {
-    //--- API ADDRESS.
-    private static final String REPO_URL = "https://api.travis-ci.com/repo/{repoName}/branch/{branchName}";
-
     //--- REPO AND BRANCH TO POLL.
     private String repoIdentifier;
     private String branchName;

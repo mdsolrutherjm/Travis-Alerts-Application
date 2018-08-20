@@ -1,22 +1,24 @@
 package intern.project.travisalerts;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import javax.xml.ws.Response;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 @RestController
 
 public class AppStatusRequestController {
-    private final String SLACKBTN = "<a href=\"https://slack.com/oauth/authorize?client_id=79629037168.408923971728&scope=incoming-webhook,commands\"><img alt=\"Add to Slack\" height=\"40\" width=\"139\" src=\"https://platform.slack-edge.com/img/add_to_slack.png\" srcset=\"https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x\" /></a>";
     @RequestMapping(value ="/app_status")
     public String app_status()
     {
@@ -43,16 +45,29 @@ public class AppStatusRequestController {
         System.out.println(response.getBody());
         SlackAuthJSON slackAuth = JsonUtils.deserializeSlackAuth(response.getBody());
 
-        SlackNotifier sn = new SlackNotifier(slackAuth.incomingWebhook.channelURL);
 
-        //save the channel ID and channel URL to a text file.
-
-        sn.sendText("New Channel authenticated!");
-        return "<h1>Slack Alerts Notifier</h1>\nProcessing your request... ";
+        TravisAlertsApplication.dc.addChannel(slackAuth.incomingWebhook.channelID, slackAuth.incomingWebhook.channelURL);
+        new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendText("Configured");
+        try
+        {
+            return StreamUtils.copyToString( new ClassPathResource("configure.html").getInputStream(), Charset.defaultCharset()  );
+        }
+        catch (IOException e)
+        {
+            return "Not Found";
+        }
     }
     @RequestMapping(value ="/newchannel")
     public String newchannel()
     {
-        return "<h2>Click below to add Travis Alerts to a new Medidata Slack channel!\n" + SLACKBTN;
+        try
+        {
+            return StreamUtils.copyToString( new ClassPathResource("newchannel.html").getInputStream(), Charset.defaultCharset()  );
+        }
+        catch (IOException e)
+        {
+            return "Not Found";
+        }
+
     }
 }

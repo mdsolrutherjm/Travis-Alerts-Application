@@ -1,29 +1,35 @@
 package intern.project.travisalerts;
 
-import java.util.ArrayList;
-
 public class DataController {
     int size = 0;
-    String[][] urls = new String[10][10];
+    String[][] channelData = new String[10][10];
+
+    //PollingData Channel ID, repo name, build name, active status
+    public DataController()
+    {
+        //Load data from file
+    }
     private String[][] returnChannels()
     {
-        return urls;
+        return channelData;
     }
     public void addChannel(String name, String url)
     {
         System.out.println("NEW CHANNEL: " + name + " " + url);
-        urls[size][0] = name;
-        urls[size][1] = url;
+        channelData[size][0] = name;
+        channelData[size][1] = url;
         size++;
+
+        //Save data to file
     }
     public String getChannelURL(String name)
     {
         System.out.println("SEARCHING FOR CHANNEL " + name);
         for (int i = 0; i < size; i++)
         {
-            if (urls[i][0].equals(name))
+            if (channelData[i][0].equals(name))
             {
-                return urls[i][1];
+                return channelData[i][1];
             }
         }
         return null;

@@ -1,16 +1,13 @@
 package intern.project.travisalerts;
 
-import com.sun.media.jfxmediaimpl.MetadataParserImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-
-import java.util.Enumeration;
 import java.util.Iterator;
 
 @RestController
 @RequestMapping("/command")
-public class RequestController implements Runnable {
+public class SlackRequestController implements Runnable {
     private final String CONSUMES = "application/x-www-form-urlencoded";
 
     /**

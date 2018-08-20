@@ -26,7 +26,7 @@ public class WebRequestController {
     }
 
     @RequestMapping(value ="/configure", params = {"code", "state"})
-    public String slackconfig(@RequestParam (value = "code") String code)
+    public String slackConfig(@RequestParam (value = "code") String code)
     {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -50,7 +50,20 @@ public class WebRequestController {
         new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendText("Configured");
         try
         {
-            return StreamUtils.copyToString( new ClassPathResource("configure.html").getInputStream(), Charset.defaultCharset()  );
+            return String.format(StreamUtils.copyToString( new ClassPathResource("configure.html").getInputStream(), Charset.defaultCharset()  ), slackAuth.incomingWebhook.channel);
+        }
+        catch (IOException e)
+        {
+            return "Not Found";
+        }
+    }
+    @RequestMapping(value ="/configure", params = {"error"})
+    public String slackConfigError(@RequestParam("error") String error)
+    {
+
+        try
+        {
+            return String.format(StreamUtils.copyToString( new ClassPathResource("configure_error.html").getInputStream(), Charset.defaultCharset()  ), error);
         }
         catch (IOException e)
         {

@@ -9,7 +9,8 @@ import java.util.Iterator;
 @RequestMapping("/command")
 public class SlackRequestController implements Runnable {
     private final String CONSUMES = "application/x-www-form-urlencoded";
-
+    private final String MISSING_PARAMETER = "You are missing a query parameter. \n";
+    private final String ADD_BRANCH_USAGE = "Usage: /addbranch [repo] [branch]";
     /**
      * use of slacknotifier should be temporary????? should response using the response_url method instead once we are actually
      * having this hosted.
@@ -22,16 +23,6 @@ public class SlackRequestController implements Runnable {
     public void getStatus(WebRequest request)
     {
         slackAPI.sendText("Not yet implemented :(\nNo method yet exists for getstatus. ");
-    }
-    @RequestMapping(value ="/debug")
-    public void debug(WebRequest request)
-    {
-        SlackNotifier sn = new SlackNotifier(request.getParameter("response_url"));
-        Iterator<String> params = request.getParameterNames();
-        while(params.hasNext()){
-            String paramName = params.next();
-            sn.sendText("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
-        }
     }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO
@@ -48,13 +39,18 @@ public class SlackRequestController implements Runnable {
         String channelURL = request.getParameter("response_url");
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
-        String repo = parameter[0];
-        String branch = parameter[1];
-
-
-        new SlackNotifier(channelURL).sendText("Set to poll " + repo + " " + branch);
-        Thread t = new Thread(new MainService(repo, branch, new SlackNotifier(TravisAlertsApplication.dc.getChannelURL(channelID))));
-        t.start();
+        if (parameter.length == 2)
+        {
+            String repo = parameter[0];
+            String branch = parameter[1];
+            new SlackNotifier(channelURL).sendText("Set to poll " + repo + " " + branch);
+            Thread t = new Thread(new MainService(repo, branch, 5,new SlackNotifier(TravisAlertsApplication.dc.getChannelURL(channelID))));
+            t.start();
+        }
+        else
+        {
+            new SlackNotifier(channelURL).sendText(MISSING_PARAMETER + ADD_BRANCH_USAGE);
+        }
     }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO

@@ -1,6 +1,5 @@
 package intern.project.travisalerts;
 
-import com.sun.javafx.fxml.builder.URLBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -92,7 +91,6 @@ public class MainService implements Runnable {
                 System.exit(1);
             }
         }
-
     }
 
     @Bean

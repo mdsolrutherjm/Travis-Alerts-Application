@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 
 @RestController
 
-public class AppStatusRequestController {
+public class WebRequestController {
     @RequestMapping(value ="/app_status")
     public String app_status()
     {

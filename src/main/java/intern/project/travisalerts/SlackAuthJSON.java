@@ -19,5 +19,4 @@ public class SlackAuthJSON {
     String teamID;
     @JsonProperty("incoming_webhook")
     IncomingWebhook incomingWebhook;
-
 }

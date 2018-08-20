@@ -9,47 +9,38 @@ import java.util.Iterator;
 @RequestMapping("/command")
 public class SlackRequestController implements Runnable {
     private final String CONSUMES = "application/x-www-form-urlencoded";
-    private final String MISSING_PARAMETER = "You are missing a query parameter. \n";
     private final String ADD_BRANCH_USAGE = "Usage: /addbranch [repo] [branch]";
-    /**
-     * use of slacknotifier should be temporary????? should response using the response_url method instead once we are actually
-     * having this hosted.
-     */
-    SlackNotifier slackAPI = new SlackNotifier( "https://hooks.slack.com/services/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");
 
     public void run(){}
 
     @RequestMapping(value ="/getstatus")
     public void getStatus(WebRequest request)
     {
-        slackAPI.sendText("Not yet implemented :(\nNo method yet exists for getstatus. ");
     }
-    /**
-     * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO
-     * 1) there's no input validation for the parameters that we're dealing with here.
-     * 2) this command should ONLY be adding to a database so you can start it with startpolling. but since theres no DB, we'll just do it here for now.
-     *
-     * Deals with the addbranch command.
-     * Adds a new branch to poll.
-     */
     @RequestMapping(value ="/addbranch", consumes = CONSUMES)
     public void addbranch(WebRequest request)
     {
         String channelID = request.getParameter("channel_id");
-        String channelURL = request.getParameter("response_url");
+        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
-        if (parameter.length == 2)
+
+        String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
+
+        if (permanentURL == null) //do we have a permanent room URL??
         {
-            String repo = parameter[0];
-            String branch = parameter[1];
-            new SlackNotifier(channelURL).sendText("Set to poll " + repo + " " + branch);
-            Thread t = new Thread(new MainService(repo, branch, 5,new SlackNotifier(TravisAlertsApplication.dc.getChannelURL(channelID))));
-            t.start();
+            response.sendSetupNewRoom();
+        }
+        else if (parameter.length != 2)
+        {
+            response.sendInvalidParameters(ADD_BRANCH_USAGE);
         }
         else
         {
-            new SlackNotifier(channelURL).sendText(MISSING_PARAMETER + ADD_BRANCH_USAGE);
+            String repo = parameter[0];
+            String branch = parameter[1];
+            Thread t = new Thread(new MainService(repo, branch, 5,new SlackNotifier(permanentURL)));
+            t.start();
         }
     }
     /**
@@ -63,7 +54,6 @@ public class SlackRequestController implements Runnable {
     @RequestMapping(value ="/deletebranch", consumes = CONSUMES)
     public void deletebranch(WebRequest request)
     {
-        slackAPI.sendText("Not yet implemented :(\nNo method yet exists for deletebranch. ");
     }
     /**
      * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO
@@ -76,7 +66,6 @@ public class SlackRequestController implements Runnable {
     @RequestMapping(value ="/startpolling", consumes = CONSUMES)
     public void startpolling(WebRequest request)
     {
-        slackAPI.sendText("Not yet implemented :(\nNo method yet exists for startpolling. ");
 
     }
     /**
@@ -90,6 +79,5 @@ public class SlackRequestController implements Runnable {
     @RequestMapping(value ="/stoppolling", consumes = CONSUMES)
     public void stoppolling(WebRequest request)
     {
-        slackAPI.sendText("Not yet implemented :(\nNo method yet exists for startpolling. ");
     }
 }

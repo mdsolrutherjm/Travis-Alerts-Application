@@ -16,11 +16,11 @@ public class SlackNotifier {
     public SlackNotifier(String url)
     {
         this.URL = url;
-        System.out.println("New Slack Notifier Object" + url);
     }
 
     //Template for the passed/failed build description (to go within the template)
     private final String DESCRIPTION = "Build #%d %s (%s, %s)\n%s@%s";
+    private final String INVALID_PARAMETERS = "The specified query parameters are invalid. ";
     //Template for the passed/failed build messages.
     private final String BUILD_TEMPLATE = "{\n" +
             "    \"attachments\": [\n" +
@@ -35,6 +35,30 @@ public class SlackNotifier {
             "                    \"url\": \"%s\"\n" +
             "                }\n" +
             "            ]\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+    private final String SETUP_NEW_ROOM = "{\n" +
+            "    \"text\": \"You have not set up this channel for Travis Alerts! \\n Click the button below to begin the setup.\",\n" +
+            "    \"attachments\": [\n" +
+            "        {\n" +
+            "            \"fallback\": \"You have not set up this Channel for Travis Alerts! \\n Click the button below to begin the setup.\",\n" +
+            "            \"actions\": [\n" +
+            "                {\n" +
+            "                    \"type\": \"button\",\n" +
+            "                    \"text\": \"Set up Travis Alerts\",\n" +
+            "                    \"url\": \"http://travisalertdemo-sandbox.imedidata.net/newchannel\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+    private final String ERROR_PROCESSING = "{\n" +
+            "    \"text\": \"%s\",\n" +
+            "    \"attachments\": [\n" +
+            "        {\n" +
+            "            \"text\": \"%s\",\n" +
+            "\t\t\t\"color\": \"%s\"\n" +
             "        }\n" +
             "    ]\n" +
             "}";
@@ -66,7 +90,29 @@ public class SlackNotifier {
     {
         sendJson("{\'text\':\'" + text + "\'}");
     }
-
+    /**
+     * Sends a standard text message to set up a new room.
+     */
+    public void sendSetupNewRoom()
+    {
+        sendJson(SETUP_NEW_ROOM);
+    }
+    /**
+     * Sends a standard error message for if the polling service returned 404 not found.
+     */
+    public void sendRepoBranchNotFound(String repo, String branch, String e)
+    {
+        String title = String.format("Travis Alerts was unable to poll %s@%s.\nEnsure the specified repository and branch names are accurate and try again.", repo, branch);
+        String description = String.format("(%s)", e);
+        sendJson(String.format(ERROR_PROCESSING, title, description, FAILED_COLOUR));
+    }
+    /**
+     * Sends a standard error message for if the polling service returned 404 not found.
+     */
+    public void sendInvalidParameters(String usage)
+    {
+        sendJson(String.format(ERROR_PROCESSING, INVALID_PARAMETERS, usage, FAILED_COLOUR));
+    }
     /**
      * Sends JSON to the pre-set Slack channel.
      * @param json JSON to be sent.

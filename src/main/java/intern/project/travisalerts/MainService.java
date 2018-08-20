@@ -17,7 +17,6 @@ public class MainService implements Runnable {
     private String branchName;
     private long pollMs = 0;
     private boolean isRepeating;
-
     //AUTHORIZATION
     static Map<String, String> env = System.getenv();
     private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
@@ -54,7 +53,6 @@ public class MainService implements Runnable {
 
     public void run()
     {
-        slackAPI.sendText("Commencing polling " + this.repoIdentifier + " " + this.branchName);
         boolean running = true;
         while (running)
         {
@@ -71,15 +69,11 @@ public class MainService implements Runnable {
                 else if (branch.lastBuild.state.equals("failed")) {
                     slackAPI.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL);
                 }
-
-
             }
             catch(HttpClientErrorException e)
             {
-                /**
-                 * getApiStringResponse() returns client error if the content is unavailable. check for this when we put it in a loop.
-                 */
-                System.out.println(repoIdentifier + branchName + "\n" + e);
+                slackAPI.sendRepoBranchNotFound(repoIdentifier, branchName, e.toString());
+                running = false;
             }
             try
             {

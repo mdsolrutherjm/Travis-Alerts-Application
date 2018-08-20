@@ -15,10 +15,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 @RestController
 
 public class WebRequestController {
+    static Map<String, String> env = System.getenv();
+    private static String CLIENT_ID = env.get("TRAVIS_ALERTS_CLIENT_ID");
+    private static String CLIENT_SECRET = env.get("TRAVIS_ALERTS_CLIENT_SECRET");
+
     @RequestMapping(value ="/app_status")
     public String app_status()
     {
@@ -34,8 +39,8 @@ public class WebRequestController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("client_id", "79629037168.408923971728" ); //REMOVE THIS LATER.
-        map.add("client_secret", "e0d8e425514cad61362fc6167e93c386");
+        map.add("client_id", CLIENT_ID);
+        map.add("client_secret", CLIENT_SECRET);
         map.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map,headers);

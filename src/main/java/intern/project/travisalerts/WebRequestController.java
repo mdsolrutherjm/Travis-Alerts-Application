@@ -57,6 +57,18 @@ public class WebRequestController {
             return "Not Found";
         }
     }
+    @RequestMapping(value ="/configure", params = {"error"})
+    public String slackconfig()
+    {
+        try
+        {
+            return StreamUtils.copyToString( new ClassPathResource("configure_error.html").getInputStream(), Charset.defaultCharset()  );
+        }
+        catch (IOException e)
+        {
+            return "Not Found";
+        }
+    }
     @RequestMapping(value ="/newchannel")
     public String newchannel()
     {

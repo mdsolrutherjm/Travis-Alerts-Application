@@ -16,6 +16,12 @@ public class DataController {
     {
         return channelData;
     }
+
+    /**
+     * Adds a new channel ID and URL to the data storage
+     * @param name  ID of the channel.
+     * @param url URL of the channel.
+     */
     public void addChannel(String name, String url)
     {
         System.out.println("NEW CHANNEL: " + name + " " + url);
@@ -26,6 +32,12 @@ public class DataController {
         //Save data to file
 
     }
+
+    /**
+     * Traverses through the URL array and finds the requested channel URL based on a matching channel ID.
+     * @param name the channel ID to find the relevant URL for .
+     * @return the channel URL found (or null if the URL does not exist. )
+     */
     public String getChannelURL(String name)
     {
         System.out.println("SEARCHING FOR CHANNEL " + name);

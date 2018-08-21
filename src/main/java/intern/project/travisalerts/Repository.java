@@ -21,21 +21,4 @@ public class Repository {
     String name;
     @JsonProperty
     String slug;
-
-//    @JsonCreator
-//    public Repository(
-//            @JsonProperty("@type") String type,
-//            @JsonProperty("@href") String href,
-//            @JsonProperty("@representation") String representation,
-//            int id,
-//            String name,
-//            String slug) {
-//        this.type = type;
-//        this.href = href;
-//        this.representation = representation;
-//        this.id = id;
-//        this.name = name;
-//        this.slug = slug;
-
-
 }

@@ -17,6 +17,7 @@ public class SlackRequestController implements Runnable {
     public void getStatus(WebRequest request)
     {
     }
+
     @RequestMapping(value ="/addbranch", consumes = CONSUMES)
     public void addbranch(WebRequest request)
     {

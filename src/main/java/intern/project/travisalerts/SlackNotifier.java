@@ -1,10 +1,22 @@
 package intern.project.travisalerts;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.sun.tools.internal.ws.wsdl.document.Output;
+import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 
 public class SlackNotifier {
@@ -115,17 +127,22 @@ public class SlackNotifier {
     }
     /**
      * Sends JSON to the pre-set Slack channel.
+     *
+     * BUG: cannot use ' in json text.
      * @param json JSON to be sent.
      * @throws HttpClientErrorException throws this if some kind of failure occurs (e.g. 404).
      */
     @Bean
     public void sendJson(String json) throws HttpClientErrorException
     {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
         RestTemplate restTemplate = new RestTemplate();
 
+        ObjectMapper om = new ObjectMapper();
 
-
-        HttpEntity<String> request = new HttpEntity<>(json);
+        HttpEntity<String> request = new HttpEntity<String>(json, headers);
         restTemplate.exchange(URL, HttpMethod.POST, request, String.class);
     }
 }

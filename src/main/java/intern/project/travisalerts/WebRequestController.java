@@ -1,5 +1,7 @@
 package intern.project.travisalerts;
 
+import org.apache.tomcat.util.bcel.Const;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -22,10 +25,23 @@ import java.util.Map;
 
 public class WebRequestController {
     static Map<String, String> env = System.getenv();
-    private static String CLIENT_ID = env.get("TRAVIS_ALERTS_CLIENT_ID");
-    private static String CLIENT_SECRET = env.get("TRAVIS_ALERTS_CLIENT_SECRET");
+    private static String CLIENT_ID = env.get(ConstantUtils.ENV_CLIENT_ID);
+    private static String CLIENT_SECRET = env.get(ConstantUtils.ENV_CLIENT_SECRET);
 
     private final String INTERNAL_HTML_MISSING = "A project HTML document was missing. Rebuild this Java Application. ";
+    public WebRequestController()
+    {
+        if (CLIENT_ID == null)
+        {
+            System.out.println(
+                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_CLIENT_ID));
+        }
+        if (CLIENT_SECRET == null)
+        {
+            System.out.println(
+                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_CLIENT_SECRET));
+        }
+    }
     @RequestMapping(value ="/app_status")
     public String app_status()
     {

@@ -20,7 +20,8 @@ public class MainService implements Runnable {
     private boolean isRepeating;
     //AUTHORIZATION
     static Map<String, String> env = System.getenv();
-    private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
+    private static String TRAVIS_AUTH_TOKEN = env.get(ConstantUtils.ENV_TRAVIS_TOKEN);
+
     //SLACK ROOM.
     SlackNotifier slackAPI;
     //ENCODING
@@ -37,6 +38,11 @@ public class MainService implements Runnable {
         this.branchName = branch;
         isRepeating = false;
         slackAPI = slack;
+        if (TRAVIS_AUTH_TOKEN == null)
+        {
+            System.out.println(
+                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_TRAVIS_TOKEN));
+        }
     }
     /**
      * For repeating polling.
@@ -51,6 +57,12 @@ public class MainService implements Runnable {
         this.pollMs = (pollMin * 60000);
         isRepeating = true;
         slackAPI = slack;
+
+        if (TRAVIS_AUTH_TOKEN == null)
+        {
+            System.out.println(
+                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_TRAVIS_TOKEN));
+        }
     }
 
     public void run()

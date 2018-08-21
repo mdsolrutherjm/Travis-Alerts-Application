@@ -4,6 +4,10 @@ public class DataController {
     int size = 0;
     String[][] channelData = new String[10][10];
 
+    /**
+     * this method is called when our program starts.
+     * it should load the data from the text file into the variables.
+     */
     public DataController()
     {
         //Load data from file
@@ -20,6 +24,7 @@ public class DataController {
         size++;
 
         //Save data to file
+
     }
     public String getChannelURL(String name)
     {

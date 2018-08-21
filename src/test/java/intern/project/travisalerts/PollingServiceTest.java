@@ -1,8 +1,14 @@
 package intern.project.travisalerts;
 
+import junit.framework.AssertionFailedError;
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.internal.runners.statements.Fail;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
+import javax.validation.constraints.AssertFalse;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 public class PollingServiceTest {
@@ -15,7 +21,14 @@ public class PollingServiceTest {
         String room =  "https://hooks.slack.com/services/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";
 
         MainService ms = new MainService(repo, branch, new SlackNotifier(room));
-        System.out.println(ms.getAPIStringResponse(repo,branch));
+        try
+        {
+            System.out.println(ms.getAPIStringResponse(repo,branch));
+        }
+        catch(HttpClientErrorException | UnsupportedEncodingException | ResourceAccessException e)
+        {
+            Assert.fail(e.toString());
+        }
     }
     @Test
     public void validRequestWithSlashDots()
@@ -26,7 +39,14 @@ public class PollingServiceTest {
         String room =  "https://hooks.slack.com/services/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";
 
         MainService ms = new MainService(repo, branch, new SlackNotifier(room));
-        System.out.println(ms.getAPIStringResponse(repo,branch));
+        try
+        {
+            System.out.println(ms.getAPIStringResponse(repo,branch));
+        }
+        catch(HttpClientErrorException | UnsupportedEncodingException | ResourceAccessException e)
+        {
+            Assert.fail(e.toString());
+        }
     }
     @Test
     public void validRequestHyphen()
@@ -37,6 +57,13 @@ public class PollingServiceTest {
         String room = "https://hooks.slack.com/services/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";
 
         MainService ms = new MainService(repo, branch, new SlackNotifier(room));
-        System.out.println(ms.getAPIStringResponse(repo,branch));
+        try
+        {
+            System.out.println(ms.getAPIStringResponse(repo,branch));
+        }
+        catch(HttpClientErrorException | UnsupportedEncodingException | ResourceAccessException e)
+        {
+            Assert.fail(e.toString());
+        }
     }
 }

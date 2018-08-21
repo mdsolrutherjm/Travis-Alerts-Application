@@ -4,7 +4,6 @@ public class DataController {
     int size = 0;
     String[][] channelData = new String[10][10];
 
-    //PollingData Channel ID, repo name, build name, active status
     public DataController()
     {
         //Load data from file
@@ -34,4 +33,5 @@ public class DataController {
         }
         return null;
     }
+
 }

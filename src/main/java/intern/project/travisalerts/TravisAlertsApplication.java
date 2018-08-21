@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -43,7 +44,7 @@ public class TravisAlertsApplication {
                         System.out.println(ms.getAPIStringResponse(arg1, arg2));
 
                     }
-                    catch (HttpClientErrorException e)
+                    catch (HttpClientErrorException|UnsupportedEncodingException e)
                     {
                         System.out.println(e);
                     }

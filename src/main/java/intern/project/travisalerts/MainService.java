@@ -3,6 +3,7 @@ package intern.project.travisalerts;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -20,9 +21,10 @@ public class MainService implements Runnable {
     //AUTHORIZATION
     static Map<String, String> env = System.getenv();
     private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
-
     //SLACK ROOM.
     SlackNotifier slackAPI;
+    //ENCODING
+    private final String URL_ENCODING = "UTF-8";
 
     /**
      * For non-repeating polling.
@@ -70,7 +72,7 @@ public class MainService implements Runnable {
                     slackAPI.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL);
                 }
             }
-            catch(HttpClientErrorException e)
+            catch(HttpClientErrorException|UnsupportedEncodingException e)
             {
                 slackAPI.sendRepoBranchNotFound(repoIdentifier, branchName, e.toString());
                 running = false;
@@ -88,18 +90,14 @@ public class MainService implements Runnable {
     }
 
     @Bean
-    public String getAPIStringResponse(String repo, String branch) throws HttpClientErrorException
+    public String getAPIStringResponse(String repo, String branch) throws HttpClientErrorException, UnsupportedEncodingException, ResourceAccessException
     {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
-        try
-        {
-            repo = URLEncoder.encode(repo, "UTF-8");
-            branch = URLEncoder.encode(branch, "UTF-8");
 
-        }
-        catch (UnsupportedEncodingException e){}
+        repo = URLEncoder.encode(repo, URL_ENCODING);
+        branch = URLEncoder.encode(branch, URL_ENCODING);
 
         UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl("https://api.travis-ci.com").path("/repo/" + repo +"/branch/" + branch);
         UriComponents components = uri.build(true);

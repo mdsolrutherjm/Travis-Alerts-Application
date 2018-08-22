@@ -5,7 +5,7 @@
 
 	<groupId>intern.project</groupId>
 	<artifactId>travis-alerts</artifactId>
-	<version>0.0.4-commandStartPolling</version>
+	<version>0.0.6-commandStartPolling</version>
 	<packaging>jar</packaging>
 
 	<name>travis-alerts</name>

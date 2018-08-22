@@ -40,9 +40,8 @@ public class SlackRequestController implements Runnable {
         else
         {
             int minutes = convertToInteger(parameter[2]);
-
             //Validation checks - are these parameters valid?
-            if (minutes != 0) //Our converter returns '0' if minutes is invalid.
+            if (minutes > 0) //Our converter returns '0' if minutes is invalid.
             {
                 String repo = parameter[0];
                 String branch = parameter[1];

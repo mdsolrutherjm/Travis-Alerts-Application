@@ -20,9 +20,9 @@ public class TravisAlertsApplication {
 
         Scanner inputListener = new Scanner(System.in);
         String arg0,arg1,arg2,arg3 = "";
+        healthCheck(); //Check all env variables are present.
 
         loadPolling();
-
 		while (programState)
         {
             System.out.print("Travis Alerts > ");
@@ -88,5 +88,17 @@ public class TravisAlertsApplication {
         //Extract information
         //Start new threads accordingly
         //creating a every-1-min poll for study_management develop branch.
+    }
+
+    /**
+     * Checks that all the required Environment Variables are loaded.
+     */
+    public static void healthCheck()
+    {
+        if ((env.get("TRAVIS_TOKEN") == null) || (env.get(ConstantUtils.ENV_CLIENT_ID) == null) || (env.get(ConstantUtils.ENV_CLIENT_SECRET) == null))
+        {
+            System.out.println(ConstantUtils.MISSING_ENV_VARIABLE);
+            System.exit(1);
+        }
     }
 }

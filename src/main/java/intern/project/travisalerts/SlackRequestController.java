@@ -25,16 +25,16 @@ public class SlackRequestController implements Runnable {
         SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
-
+        //attempt to get the permenant URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
         if (permanentURL == null) //do we have a permanent room URL??
         {
-            response.sendSetupNewRoom();
+            response.sendSetupNewRoom(); // no room set-up - send an error message.
         }
         else if (parameter.length != 2)
         {
-            response.sendInvalidParameters(ADD_BRANCH_USAGE);
+            response.sendInvalidParameters(ADD_BRANCH_USAGE); //
         }
         else
         {

@@ -34,12 +34,11 @@ public class WebRequestController {
         if (CLIENT_ID == null)
         {
             System.out.println(
-                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_CLIENT_ID));
+                    ConstantUtils.MISSING_ENV_VARIABLE);
         }
         if (CLIENT_SECRET == null)
         {
-            System.out.println(
-                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_CLIENT_SECRET));
+            System.out.println(ConstantUtils.MISSING_ENV_VARIABLE);
         }
     }
     @RequestMapping(value ="/app_status")
@@ -72,12 +71,12 @@ public class WebRequestController {
 
             if (slackAuth.ok != true)
             {
-                return slackConfigError("Channel Information couldn't be retrieved. Is Slack alive?");
+                return slackConfigError("Channel Information couldn't be retrieved. Is Slack alive? Check that the " + ConstantUtils.ENV_CLIENT_ID + ", " + ConstantUtils.ENV_CLIENT_SECRET + ", " + ConstantUtils.ENV_TRAVIS_TOKEN + " settings are accurate on the server-side.  ");
             }
             else
             {
                 TravisAlertsApplication.dc.addChannel(slackAuth.incomingWebhook.channelID, slackAuth.incomingWebhook.channelURL);
-                new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendText("Configured");
+                new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendText(ConstantUtils.FIRST_TIME_CONFIG_RESPONSE);
                 try
                 {
                     return String.format(StreamUtils.copyToString( new ClassPathResource("configure.html").getInputStream(), Charset.defaultCharset()  ), slackAuth.incomingWebhook.channel);
@@ -92,8 +91,6 @@ public class WebRequestController {
         {
             return slackConfigError(e.toString());
         }
-
-
     }
     @RequestMapping(value ="/configure", params = {"error"})
     public String slackConfigError(@RequestParam("error") String error)

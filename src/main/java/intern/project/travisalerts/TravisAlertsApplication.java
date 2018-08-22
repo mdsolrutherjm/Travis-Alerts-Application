@@ -20,7 +20,7 @@ public class TravisAlertsApplication {
 
         Scanner inputListener = new Scanner(System.in);
         String arg0,arg1,arg2,arg3 = "";
-        healthCheck(); //Check all env variables are present.
+        //healthCheck(); //Check all env variables are present.
 
         loadPolling();
 		while (programState)

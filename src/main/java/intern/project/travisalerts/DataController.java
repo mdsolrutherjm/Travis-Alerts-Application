@@ -17,7 +17,22 @@ public class DataController {
          * add functionality to constructor to unpack each line in the text file as a row in channelData, if channelData
          * is empty. If not, do not do this.
           */
-
+        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources/channelDB.txt"; //get .txt file
+        if (channelData[0].length == 0 & channelData[1].length == 0) { //if channelData is empty
+            try {
+                FileReader fr = new FileReader(fileName);
+                BufferedReader br = new BufferedReader(fr); //object to read .txt file
+                String line;
+                int i =0; //initialize counter
+                while ((line = br.readLine()) != null){ //continues to read through the whole file
+                    String[] channelElements = line.split(","); //split the line by comma instances
+                    channelData[i][0] = channelElements[0];
+                    channelData[i][1] = channelElements[1];
+                    i++;
+                }
+            }
+            catch (IOException e){}
+        }
     }
 
     private String[][] returnChannels()

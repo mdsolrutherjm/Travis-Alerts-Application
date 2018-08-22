@@ -28,7 +28,8 @@ public class SlackRequestController implements Runnable {
         //attempt to get the permenant URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
-        if (permanentURL == null) //do we have a permanent room URL??
+        //do we have a permanent room URL?? (if URL for current channel does not exist, then sendSetupNewRoom)
+        if (permanentURL == null)
         {
             response.sendSetupNewRoom(); // no room set-up - send an error message.
         }

@@ -31,4 +31,9 @@ public class SlackNotifierTest {
     {
         sf.sendPassed(80, "mdsol/studymanagement", "feature/MCC-374748_sample_branch", "James Rutherford", "2 min 46 sec", "http://www.google.co.uk");
     }
+    @Test
+    public void sendsUsage()
+    {
+        sf.sendUsageWithDescription("this is the description", "somecommand", "somecommand [someparameter]");
+    }
 }

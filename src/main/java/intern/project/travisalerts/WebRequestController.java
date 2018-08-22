@@ -76,7 +76,7 @@ public class WebRequestController {
             else
             {
                 TravisAlertsApplication.dc.addChannel(slackAuth.incomingWebhook.channelID, slackAuth.incomingWebhook.channelURL);
-                new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendText(ConstantUtils.FIRST_TIME_CONFIG_RESPONSE);
+                new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendUsageWithDescription(ConstantUtils.FIRST_TIME_CONFIG_RESPONSE, "startpolling", ConstantUtils.USAGE_START_POLLING);
                 try
                 {
                     return String.format(StreamUtils.copyToString( new ClassPathResource("configure.html").getInputStream(), Charset.defaultCharset()  ), slackAuth.incomingWebhook.channel);

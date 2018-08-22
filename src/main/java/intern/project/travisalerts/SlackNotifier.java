@@ -64,6 +64,17 @@ public class SlackNotifier {
             "        }\n" +
             "    ]\n" +
             "}";
+    private final String USAGE_WITH_DCESCRIPTION = "{\n" +
+            "    \"attachments\": [\n" +
+            "        {\n" +
+            "            \"fallback\": \"%s\",\n" +
+            "            \"color\": \"#808080\",\n" +
+            "            \"pretext\": \"%s\",\n" +
+            "            \"author_name\": \"Usage for command '%s'\",\n" +
+            "            \"text\": \"%s\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
     /**
      * Sends a properly formatted build failure message to the pre-set Slack channel.
      */
@@ -115,13 +126,11 @@ public class SlackNotifier {
     {
         sendJson(String.format(ERROR_PROCESSING, INVALID_PARAMETERS, usage, FAILED_COLOUR));
     }
-    /**
-     * Sends JSON to the pre-set Slack channel.
-     *
-     * BUG: cannot use ' in json text.
-     * @param json JSON to be sent.
-     * @throws HttpClientErrorException throws this if some kind of failure occurs (e.g. 404).
-     */
+
+    public void sendUsageWithDescription(String description, String command, String usage)
+    {
+        sendJson(String.format(USAGE_WITH_DCESCRIPTION, description,description, command, usage));
+    }
     @Bean
     public void sendJson(String json) throws HttpClientErrorException
     {

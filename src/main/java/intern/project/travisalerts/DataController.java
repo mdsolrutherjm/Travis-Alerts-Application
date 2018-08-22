@@ -13,12 +13,14 @@ public class DataController {
      */
     public DataController()
     {
+
         /**
          * add functionality to constructor to unpack each line in the text file as a row in channelData, if channelData
          * is empty. If not, do not do this.
           */
-        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources/channelDB.txt"; //get .txt file
-        if (channelData[0].length == 0 & channelData[1].length == 0) { //if channelData is empty
+        String fileName = "channelDB.txt"; //get .txt file
+        System.out.println(channelData[0][0]);
+        if ((channelData[0][0] == null) && (channelData[0][1] == null)) { //if channelData is empty
             try {
                 FileReader fr = new FileReader(fileName);
                 BufferedReader br = new BufferedReader(fr); //object to read .txt file
@@ -28,10 +30,12 @@ public class DataController {
                     String[] channelElements = line.split(","); //split the line by comma instances
                     channelData[i][0] = channelElements[0];
                     channelData[i][1] = channelElements[1];
+                    System.out.println(channelData[i][0] +","+ channelData[i][1] );
                     i++;
                 }
+                size = i;
             }
-            catch (IOException e){}
+            catch (IOException e){System.out.println("Failed to read file: "+fileName+"/n"+e.toString());}
         }
     }
 
@@ -61,7 +65,7 @@ public class DataController {
          * Needs to be such that this data in the text file remains even when the server goes down.
          */
 
-        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources/channelDB.txt";
+        String fileName = "channelDB.txt";
         BufferedWriter bw = null;
         FileWriter fw = null;
 

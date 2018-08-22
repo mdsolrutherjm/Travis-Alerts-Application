@@ -46,7 +46,7 @@ public class DataController {
          * Needs to be such that this data in the text file remains even when the server goes down.
          */
 
-        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources";
+        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources/channelDB.txt";
         BufferedWriter bw = null;
         FileWriter fw = null;
 

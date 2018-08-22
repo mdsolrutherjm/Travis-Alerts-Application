@@ -1,10 +1,5 @@
 package intern.project.travisalerts;
-
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.sun.tools.internal.ws.wsdl.document.Output;
-import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,11 +7,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.BufferedWriter;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 
 public class SlackNotifier {
@@ -100,7 +90,7 @@ public class SlackNotifier {
      */
     public void sendText(String text)
     {
-        sendJson("{\'text\':\'" + text + "\'}");
+        sendJson("{\"text\":\""+text+"\"}");
     }
     /**
      * Sends a standard text message to set up a new room.

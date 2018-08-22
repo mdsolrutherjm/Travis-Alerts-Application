@@ -17,6 +17,7 @@ public class SlackRequestController implements Runnable {
     public void getStatus(WebRequest request)
     {
     }
+
     @RequestMapping(value ="/addbranch", consumes = CONSUMES)
     public void addbranch(WebRequest request)
     {
@@ -24,17 +25,17 @@ public class SlackRequestController implements Runnable {
         SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
-
+        //attempt to get the permenant URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
         //do we have a permanent room URL?? (if URL for current channel does not exist, then sendSetupNewRoom)
         if (permanentURL == null)
         {
-            response.sendSetupNewRoom();
+            response.sendSetupNewRoom(); // no room set-up - send an error message.
         }
         else if (parameter.length != 2)
         {
-            response.sendInvalidParameters(ADD_BRANCH_USAGE);
+            response.sendInvalidParameters(ADD_BRANCH_USAGE); //
         }
         else
         {

@@ -3,6 +3,7 @@ package intern.project.travisalerts;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -12,17 +13,21 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 public class MainService implements Runnable {
+
     //--- REPO AND BRANCH TO POLL.
     private String repoIdentifier;
     private String branchName;
-    private long pollMs = 0;
-    private boolean isRepeating;
-    //AUTHORIZATION
-    static Map<String, String> env = System.getenv();
-    private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
+    private long pollMs = 0; //The time (in milliseconds) to wait between polls.
+    private boolean isRepeating; //Identifies to the run() method whether or not we should keep polling periodically.
 
-    //SLACK ROOM.
+    //TRAVIS AUTHORIZATION
+    static Map<String, String> env = System.getenv();
+    private static String TRAVIS_AUTH_TOKEN = env.get(ConstantUtils.ENV_TRAVIS_TOKEN);
+
+    //SLACK ROOM. This is used to send messages to the Slack channel associated with this MainService thread.
     SlackNotifier slackAPI;
+    //ENCODING
+    private final String URL_ENCODING = "UTF-8";
 
     /**
      * For non-repeating polling.
@@ -35,6 +40,14 @@ public class MainService implements Runnable {
         this.branchName = branch;
         isRepeating = false;
         slackAPI = slack;
+
+
+        //Check if we have the Travis Authentication Token (if not, send a error message. )
+        if (TRAVIS_AUTH_TOKEN == null)
+        {
+            System.out.println(
+                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_TRAVIS_TOKEN));
+        }
     }
     /**
      * For repeating polling.
@@ -49,11 +62,23 @@ public class MainService implements Runnable {
         this.pollMs = (pollMin * 60000);
         isRepeating = true;
         slackAPI = slack;
+
+        //Check if we have a Travis token. If not, send an error message.
+        if (TRAVIS_AUTH_TOKEN == null)
+        {
+            System.out.println(
+                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_TRAVIS_TOKEN));
+        }
     }
 
+    /**
+     * Ran when the thread is started.
+     * Will keep polling until 'running' is false.
+     */
     public void run()
     {
         boolean running = true;
+
         while (running)
         {
             running = isRepeating;
@@ -70,7 +95,7 @@ public class MainService implements Runnable {
                     slackAPI.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL);
                 }
             }
-            catch(HttpClientErrorException e)
+            catch(HttpClientErrorException|UnsupportedEncodingException e)
             {
                 slackAPI.sendRepoBranchNotFound(repoIdentifier, branchName, e.toString());
                 running = false;
@@ -87,19 +112,22 @@ public class MainService implements Runnable {
         }
     }
 
+    /**
+     * Uses the parameters to get the JSON String representing the state of the identified build.
+     * @param repo repo to poll.
+     * @param branch branch to poll
+     * @return JSON response
+     * @throws HttpClientErrorException thrown when an error (e.g. 404) occurs whilst trying to find the build.
+     */
     @Bean
-    public String getAPIStringResponse(String repo, String branch) throws HttpClientErrorException
+    public String getAPIStringResponse(String repo, String branch) throws HttpClientErrorException, UnsupportedEncodingException, ResourceAccessException
     {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
-        try
-        {
-            repo = URLEncoder.encode(repo, "UTF-8");
-            branch = URLEncoder.encode(branch, "UTF-8");
 
-        }
-        catch (UnsupportedEncodingException e){}
+        repo = URLEncoder.encode(repo, URL_ENCODING);
+        branch = URLEncoder.encode(branch, URL_ENCODING);
 
         UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl("https://api.travis-ci.com").path("/repo/" + repo +"/branch/" + branch);
         UriComponents components = uri.build(true);

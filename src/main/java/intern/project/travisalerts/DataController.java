@@ -7,7 +7,10 @@ public class DataController {
     String[][] channelData = new String[10][2]; //2d array with columns channelID and channelURL
 
 
-    //PollingData Channel ID, repo name, build name, active status
+    /**
+     * this method is called when our program starts.
+     * it should load the data from the text file into the variables.
+     */
     public DataController()
     {
         /**
@@ -23,10 +26,12 @@ public class DataController {
     }
 
     /**
+
      * Method called when /configure command received from webpage (i.e. when a channel is configured)
      * Adds new row to channelData - channelID and channelURL
      * @param name
      * @param url
+
      */
     public void addChannel(String name, String url)
     {
@@ -34,6 +39,7 @@ public class DataController {
         channelData[size][0] = name;
         channelData[size][1] = url;
         size++;
+
 
         /**
          * Extra functionality to add 'name' and 'url' to a new line in the text file, (delimited by commas)
@@ -61,6 +67,12 @@ public class DataController {
             } catch (IOException ex) { ex.printStackTrace(); }
         }
     }
+
+    /**
+     * Traverses through the URL array and finds the requested channel URL based on a matching channel ID.
+     * @param name the channel ID to find the relevant URL for .
+     * @return the channel URL found (or null if the URL does not exist. )
+     */
     public String getChannelURL(String name)
     {
         System.out.println("SEARCHING FOR CHANNEL " + name);
@@ -73,4 +85,5 @@ public class DataController {
         }
         return null;
     }
+
 }

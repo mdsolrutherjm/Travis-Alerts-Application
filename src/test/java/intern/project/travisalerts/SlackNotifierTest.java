@@ -17,7 +17,7 @@ public class SlackNotifierTest {
     @Test
     public void sendsMessage()
     {
-        sf.sendText(LocalDateTime.now().toString());
+        sf.sendText(ConstantUtils.FIRST_TIME_CONFIG_RESPONSE);
 
     }
     @Test
@@ -30,6 +30,5 @@ public class SlackNotifierTest {
     public void sendsPassed()
     {
         sf.sendPassed(80, "mdsol/studymanagement", "feature/MCC-374748_sample_branch", "James Rutherford", "2 min 46 sec", "http://www.google.co.uk");
-
     }
 }

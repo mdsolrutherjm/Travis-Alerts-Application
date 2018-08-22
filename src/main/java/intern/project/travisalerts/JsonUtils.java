@@ -18,6 +18,12 @@ public class JsonUtils {
         //System.out.println(branch.name + branch.defaultBranch +branch.existsOnGithub);
         return branch;
     }
+
+    /**
+     * This method interprets the JSON response that Slack sends us when we are authenticating a new room and puts it into a SlackAuthJSON object.
+     * @param inputJson the JSON sent by Slack.
+     * @return the object which represents the inputted JSON.
+     */
     public static SlackAuthJSON deserializeSlackAuth(String inputJson){
         ObjectMapper objectMapper = new ObjectMapper();
         SlackAuthJSON slackAuth = new SlackAuthJSON();

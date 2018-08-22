@@ -1,18 +1,33 @@
 package intern.project.travisalerts;
 
+import java.io.*;
+
 public class DataController {
     int size = 0;
-    String[][] channelData = new String[10][10];
+    String[][] channelData = new String[10][2]; //2d array with columns channelID and channelURL
+
 
     //PollingData Channel ID, repo name, build name, active status
     public DataController()
     {
-        //Load data from file
+        /**
+         * add functionality to constructor to unpack each line in the text file as a row in channelData, if channelData
+         * is empty. If not, do not do this.
+          */
+
     }
+
     private String[][] returnChannels()
     {
         return channelData;
     }
+
+    /**
+     * Method called when /configure command received from webpage (i.e. when a channel is configured)
+     * Adds new row to channelData - channelID and channelURL
+     * @param name
+     * @param url
+     */
     public void addChannel(String name, String url)
     {
         System.out.println("NEW CHANNEL: " + name + " " + url);
@@ -20,7 +35,31 @@ public class DataController {
         channelData[size][1] = url;
         size++;
 
-        //Save data to file
+        /**
+         * Extra functionality to add 'name' and 'url' to a new line in the text file, (delimited by commas)
+         * Needs to be such that this data in the text file remains even when the server goes down.
+         */
+
+        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources";
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter(fileName);
+            bw = new BufferedWriter(fw);
+            bw.write(name+","+url);
+        }
+        catch (IOException e) {e.printStackTrace();}
+
+        finally {
+            try {
+                if (bw != null)
+                    bw.close();
+
+                if (fw != null)
+                    fw.close();
+            } catch (IOException ex) { ex.printStackTrace(); }
+        }
     }
     public String getChannelURL(String name)
     {

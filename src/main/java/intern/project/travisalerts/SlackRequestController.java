@@ -1,5 +1,7 @@
 package intern.project.travisalerts;
 
+import org.apache.tomcat.util.bcel.Const;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
@@ -9,7 +11,6 @@ import java.util.Iterator;
 @RequestMapping("/command")
 public class SlackRequestController implements Runnable {
     private final String CONSUMES = "application/x-www-form-urlencoded";
-    private final String ADD_BRANCH_USAGE = "Usage: /addbranch [repo] [branch]";
 
     public void run(){}
 
@@ -18,8 +19,8 @@ public class SlackRequestController implements Runnable {
     {
     }
 
-    @RequestMapping(value ="/addbranch", consumes = CONSUMES)
-    public void addbranch(WebRequest request)
+    @RequestMapping(value ="/startpolling", consumes = CONSUMES)
+    public void startpolling(WebRequest request)
     {
         String channelID = request.getParameter("channel_id");
         SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
@@ -28,58 +29,76 @@ public class SlackRequestController implements Runnable {
         //attempt to get the permenant URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
-        //do we have a permanent room URL?? (if URL for current channel does not exist, then sendSetupNewRoom)
-        if (permanentURL == null)
+        //Validation checks - do we have all of the required parameters?
+        if (permanentURL == null) //do we have a permanent room URL??
         {
             response.sendSetupNewRoom(); // no room set-up - send an error message.
         }
-        else if (parameter.length != 2)
+        else if (parameter.length != 3)
         {
-            response.sendInvalidParameters(ADD_BRANCH_USAGE); //
+            response.sendInvalidParameters(ConstantUtils.USAGE_START_POLLING);
+        }
+        else
+        {
+            int minutes = convertToInteger(parameter[2]);
+            //Validation checks - are these parameters valid?
+            if (minutes > 0) //Our converter returns '0' if minutes is invalid.
+            {
+                String repo = parameter[0];
+                String branch = parameter[1];
+                Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permanentURL))));
+                t.start();
+            }
+            else
+            {
+                response.sendInvalidParameters(ConstantUtils.INVALID_TIME_PARAMETER);
+            }
+        }
+    }
+
+    @RequestMapping(value ="/stoppolling", consumes = CONSUMES)
+    public void stoppolling(WebRequest request)
+    {
+        String channelID = request.getParameter("channel_id");
+        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
+
+        String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
+
+
+        if (parameter.length != 2)
+        {
+            response.sendInvalidParameters(ConstantUtils.USAGE_START_POLLING);
         }
         else
         {
             String repo = parameter[0];
             String branch = parameter[1];
-            Thread t = new Thread(new MainService(repo, branch, 5,new SlackNotifier(permanentURL)));
-            t.start();
+            if (TravisAlertsApplication.dc.cancelPollingRecord(channelID,repo,branch) == true) //true indicates it has successfully terminated the polling service.
+            {
+                response.sendText(String.format(ConstantUtils.TERMINATING_POLLING, repo, branch));
+            }
+            else
+            {
+                response.sendText(String.format(ConstantUtils.TERMINATING_POLLING_ERROR, repo,branch));
+            }
         }
     }
-    /**
-     * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO
-     * should insert the polling time here. but currently theres no db - so it doesn't do much.
-     *
-     * Deals with the addbranch command.
-     * Adds a new branch to poll.
-     * @param request
-     */
-    @RequestMapping(value ="/deletebranch", consumes = CONSUMES)
-    public void deletebranch(WebRequest request)
-    {
-    }
-    /**
-     * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO
-     * should insert the polling time here. but currently theres no db - so it doesn't do much.
-     *
-     * Deals with the addbranch command.
-     * Adds a new branch to poll.
-     * @param request
-     */
-    @RequestMapping(value ="/startpolling", consumes = CONSUMES)
-    public void startpolling(WebRequest request)
-    {
 
-    }
     /**
-     * TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO TO-DO
-     * should insert the polling time here. but currently theres no db - so it doesn't do much.
-     *
-     * Deals with the addbranch command.
-     * Adds a new branch to poll.
-     * @param request
+     * Converts strings to integers.
+     * Returns '0' if the number was not converted.
+     * @param s String to convert to integer
+     * @return the converted value.
      */
-    @RequestMapping(value ="/stoppolling", consumes = CONSUMES)
-    public void stoppolling(WebRequest request)
+    public int convertToInteger(String s)
     {
+        try
+        {
+            return Integer.parseInt(s);
+        }
+        catch (NumberFormatException e)
+        {
+            return 0;
+        }
     }
 }

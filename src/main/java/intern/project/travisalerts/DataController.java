@@ -4,8 +4,9 @@ import java.io.*;
 
 public class DataController {
     int size = 0;
+    int pollingSize = 0;
     String[][] channelData = new String[10][2]; //2d array with columns channelID and channelURL
-
+    PollingRecord[] pollingData = new PollingRecord[10];
 
     /**
      * this method is called when our program starts.
@@ -13,12 +14,14 @@ public class DataController {
      */
     public DataController()
     {
+
         /**
          * add functionality to constructor to unpack each line in the text file as a row in channelData, if channelData
          * is empty. If not, do not do this.
           */
-        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources/channelDB.txt"; //get .txt file
-        if (channelData[0].length == 0 & channelData[1].length == 0) { //if channelData is empty
+        String fileName = "channelDB.txt"; //get .txt file
+        System.out.println(channelData[0][0]);
+        if ((channelData[0][0] == null) && (channelData[0][1] == null)) { //if channelData is empty
             try {
                 FileReader fr = new FileReader(fileName);
                 BufferedReader br = new BufferedReader(fr); //object to read .txt file
@@ -28,10 +31,12 @@ public class DataController {
                     String[] channelElements = line.split(","); //split the line by comma instances
                     channelData[i][0] = channelElements[0];
                     channelData[i][1] = channelElements[1];
+                    System.out.println(channelData[i][0] +","+ channelData[i][1] );
                     i++;
                 }
+                size = i;
             }
-            catch (IOException e){}
+            catch (IOException e){System.out.println("Failed to read file: "+fileName+"/n"+e.toString());}
         }
     }
 
@@ -61,7 +66,7 @@ public class DataController {
          * Needs to be such that this data in the text file remains even when the server goes down.
          */
 
-        String fileName = "/Users/jgannon/Travis-Alerts-Application/src/main/resources/channelDB.txt";
+        String fileName = "channelDB.txt";
         BufferedWriter bw = null;
         FileWriter fw = null;
 
@@ -99,6 +104,36 @@ public class DataController {
             }
         }
         return null;
+    }
+
+    /**
+     * Takes in the parameters to create a new polling record, creates it and returns the address of it.
+     * @return the PollingRecord object reference.
+     */
+    public PollingRecord createPollingRecord(String repo, String branch, String channelID, int poll, boolean active, SlackNotifier sn)
+    {
+        int id = pollingSize;
+        pollingData[id] = new PollingRecord(repo, branch, channelID, poll, active, sn);
+        pollingSize++;
+        return pollingData[id];
+    }
+
+    /**
+     * Identifies the PollingRecord to halt polling for and returns true IF it was successful.
+     * Parameters identify the PollingRecord uniquely.
+     * @return true if successful.
+     */
+    public boolean cancelPollingRecord(String channelID, String repo, String branch)
+    {
+        for (int i = 0; i < pollingSize; i++)
+        {
+            if ((pollingData[i].channelID.equals(channelID)) && (pollingData[i].repo.equals(repo)) && (pollingData[i].branch.equals(branch)))
+            {
+                pollingData[i].active = false;
+                return true;
+            }
+        }
+        return false;
     }
 
 }

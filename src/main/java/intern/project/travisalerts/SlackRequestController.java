@@ -1,6 +1,7 @@
 package intern.project.travisalerts;
 
 import org.apache.tomcat.util.bcel.Const;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
@@ -45,7 +46,7 @@ public class SlackRequestController implements Runnable {
             {
                 String repo = parameter[0];
                 String branch = parameter[1];
-                Thread t = new Thread(new MainService(repo, branch, minutes,new SlackNotifier(permanentURL)));
+                Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permanentURL))));
                 t.start();
             }
             else
@@ -58,6 +59,29 @@ public class SlackRequestController implements Runnable {
     @RequestMapping(value ="/stoppolling", consumes = CONSUMES)
     public void stoppolling(WebRequest request)
     {
+        String channelID = request.getParameter("channel_id");
+        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
+
+        String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
+
+
+        if (parameter.length != 2)
+        {
+            response.sendInvalidParameters(ConstantUtils.USAGE_START_POLLING);
+        }
+        else
+        {
+            String repo = parameter[0];
+            String branch = parameter[1];
+            if (TravisAlertsApplication.dc.cancelPollingRecord(channelID,repo,branch) == true) //true indicates it has successfully terminated the polling service.
+            {
+                response.sendText(String.format(ConstantUtils.TERMINATING_POLLING, repo, branch));
+            }
+            else
+            {
+                response.sendText(String.format(ConstantUtils.TERMINATING_POLLING_ERROR, repo,branch));
+            }
+        }
     }
 
     /**

@@ -4,8 +4,9 @@ import java.io.*;
 
 public class DataController {
     int size = 0;
+    int pollingSize = 0;
     String[][] channelData = new String[10][2]; //2d array with columns channelID and channelURL
-
+    PollingRecord[] pollingData = new PollingRecord[10];
 
     /**
      * this method is called when our program starts.
@@ -103,6 +104,36 @@ public class DataController {
             }
         }
         return null;
+    }
+
+    /**
+     * Takes in the parameters to create a new polling record, creates it and returns the address of it.
+     * @return the PollingRecord object reference.
+     */
+    public PollingRecord createPollingRecord(String repo, String branch, String channelID, int poll, boolean active, SlackNotifier sn)
+    {
+        int id = pollingSize;
+        pollingData[id] = new PollingRecord(repo, branch, channelID, poll, active, sn);
+        pollingSize++;
+        return pollingData[id];
+    }
+
+    /**
+     * Identifies the PollingRecord to halt polling for and returns true IF it was successful.
+     * Parameters identify the PollingRecord uniquely.
+     * @return true if successful.
+     */
+    public boolean cancelPollingRecord(String channelID, String repo, String branch)
+    {
+        for (int i = 0; i < pollingSize; i++)
+        {
+            if ((pollingData[i].channelID.equals(channelID)) && (pollingData[i].repo.equals(repo)) && (pollingData[i].branch.equals(branch)))
+            {
+                pollingData[i].active = false;
+                return true;
+            }
+        }
+        return false;
     }
 
 }

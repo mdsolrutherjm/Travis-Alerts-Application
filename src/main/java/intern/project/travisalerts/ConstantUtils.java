@@ -10,7 +10,7 @@ public class ConstantUtils {
     public static final String ENV_TRAVIS_TOKEN = "TRAVIS_TOKEN";
     public static final String MISSING_ENV_VARIABLE = ("CRITICAL ERROR!This application is missing environment variables. We require " + ENV_CLIENT_ID + ", " + ENV_CLIENT_SECRET + "," + ENV_TRAVIS_TOKEN);
     public static final String INVALID_TIME_PARAMETER = "The [minute] parameter was not valid. \n" + USAGE_START_POLLING;
-
-
+    public static final String TERMINATING_POLLING = "Terminating %s@%s";
+    public static final String TERMINATING_POLLING_ERROR = "Could not terminate %s@%s. Are you sure it was configured to be polled? ";
 
 }

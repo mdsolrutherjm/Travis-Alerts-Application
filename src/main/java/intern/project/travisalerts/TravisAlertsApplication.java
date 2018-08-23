@@ -35,20 +35,6 @@ public class TravisAlertsApplication {
                 case "help":
                     help();
                     break;
-                case "rawJson":
-                    arg1 = inputListener.next(); //repo
-                    arg2 = inputListener.next(); //branch
-                    try
-                    {
-                        MainService ms = new MainService(arg1, arg2, new SlackNotifier("https://hooks.slack.com/services/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"));
-                        System.out.println(ms.getAPIStringResponse(arg1, arg2));
-
-                    }
-                    catch (HttpClientErrorException|UnsupportedEncodingException e)
-                    {
-                        System.out.println(e);
-                    }
-                    break;
                 case "system":
                     System.out.println("Using Travis Token " + TRAVIS_AUTH_TOKEN);
                     break;

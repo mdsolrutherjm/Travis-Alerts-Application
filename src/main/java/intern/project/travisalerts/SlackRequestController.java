@@ -22,11 +22,14 @@ public class SlackRequestController implements Runnable {
     @RequestMapping(value ="/startpolling", consumes = CONSUMES)
     public void startpolling(WebRequest request)
     {
-        String channelID = request.getParameter("channel_id");
-        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
-        String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
+        String channelID = request.getParameter("channel_id"); //chanelID of slack channel
 
-        //attempt to get the permenant URL of the channel invoking this method.
+        //new SlackNotifier object with same room as where request is from
+        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
+
+        String[] parameter = request.getParameter("text").split(""); //Array of each parameter sent.
+
+        //attempt to get the permanent URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
         //Validation checks - do we have all of the required parameters?

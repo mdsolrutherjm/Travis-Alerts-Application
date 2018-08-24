@@ -1,5 +1,7 @@
 package intern.project.travisalerts;
 
+import org.apache.tomcat.util.bcel.Const;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -120,5 +122,41 @@ public class DataController {
         }
         return false;
     }
+    public void writePollingRecordToDisk()
+    {
+        try
+        {
+            BufferedWriter write = new BufferedWriter(new FileWriter(ConstantUtils.FILE_POLLING_RECORD, false));
+            for (PollingRecord r: pollingData)
+            {
+                /**
+                 *         this.repo = repo;
+                 *         this.branch = branch;
+                 *         this.poll = poll;
+                 *         this.channelID = channelID;
+                 *         this.active = active;
+                 *         this.sn = sn;
+                 */
+                write.write(r.repo + "," + r.branch + "," + r.poll + r.channelID + "," + r.sn.getURL() + "\n");
+            }
+            write.close(); //finish with the file.
+        }
+        catch (IOException e)
+        {
+            //is this error handling really enough?
+            System.out.println("ERROR: could not write to " + ConstantUtils.FILE_POLLING_RECORD);
+        }
+    }
+    public void readPollingRecordFromDisk()
+    {
+        try
+        {
+            BufferedReader read = new BufferedReader(new FileReader(ConstantUtils.FILE_POLLING_RECORD));
 
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("ERROR: Missing " + ConstantUtils.FILE_POLLING_RECORD + ". This is OK if this is a clean boot. ");
+        }
+    }
 }

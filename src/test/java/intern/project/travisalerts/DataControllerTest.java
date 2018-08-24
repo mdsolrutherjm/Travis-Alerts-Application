@@ -3,6 +3,7 @@ package intern.project.travisalerts;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -48,5 +49,18 @@ public class DataControllerTest {
             assert(channel.id.contains("channelid"));
         }
 
+    }
+    //Testing RecordPolling read/write functionality
+    @Test
+    public void canWritePollingRecordsToFileOK()
+    {
+        DataController dc = new DataController();
+
+        PollingRecord record = new PollingRecord("mdsol/medistrano", "develop", "someChannelID", 3, true, new SlackNotifier("http://someReasonableURL.com"));
+        dc.createPollingRecord("mdsol/medistrano", "develop", "someChannelID", 3, true, new SlackNotifier("http://someReasonableURL.com"));
+
+        //Wipe the DC and make it read from file.
+        dc = new DataController();
+        assert(dc.pollingData.contains(record));
     }
 }

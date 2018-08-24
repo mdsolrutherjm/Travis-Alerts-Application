@@ -26,7 +26,8 @@ public class MainService implements Runnable {
     private final String URL_ENCODING = "UTF-8";
 
     //BRANCH/REPO
-    String repo, branch = "";
+    String repo;
+    String branch;
     SlackNotifier sn;
 
     /**

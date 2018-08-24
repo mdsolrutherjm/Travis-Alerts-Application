@@ -18,7 +18,7 @@ public class SlackRequestController implements Runnable {
      * Functionality to respond to /getstatus command.
      * @param request
      */
-    @RequestMapping(value ="/getstatus")
+    @RequestMapping(value ="/getstatus", consumes = CONSUMES)
     public void getStatus(WebRequest request)
     {
         String channelID = request.getParameter("channel_id"); //chanelID of slack channel
@@ -27,7 +27,7 @@ public class SlackRequestController implements Runnable {
         SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
 
         //Array of each parameter sent. [0] = repo, [1] = branch.
-        String[] parameter = request.getParameter("text").split("");
+        String[] parameter = request.getParameter("text").split(" ");
 
         //attempt to get the permanent URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
@@ -43,7 +43,7 @@ public class SlackRequestController implements Runnable {
             response.sendInvalidParameters(ConstantUtils.USAGE_GET_STATUS);
         }
 
-        String repo = parameter[0]; //repo = first paramater
+        String repo = parameter[0]; //repo = first parameter
         String branch = parameter[1]; //branch = second parameter
         SlackNotifier slackRoom = new SlackNotifier(permanentURL); //slack room where request is from
         MainService ms = new MainService(repo,branch, slackRoom);

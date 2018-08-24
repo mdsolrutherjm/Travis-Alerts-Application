@@ -29,8 +29,6 @@ public class SlackRequestController implements Runnable {
         //Array of each parameter sent. [0] = repo, [1] = branch.
         String[] parameter = request.getParameter("text").split(" ");
 
-        System.out.println(parameter[0] + "," + parameter[1]);
-
         //attempt to get the permanent URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
@@ -45,7 +43,7 @@ public class SlackRequestController implements Runnable {
             response.sendInvalidParameters(ConstantUtils.USAGE_GET_STATUS);
         }
 
-        String repo = parameter[0]; //repo = first paramater
+        String repo = parameter[0]; //repo = first parameter
         String branch = parameter[1]; //branch = second parameter
         SlackNotifier slackRoom = new SlackNotifier(permanentURL); //slack room where request is from
         MainService ms = new MainService(repo,branch, slackRoom);

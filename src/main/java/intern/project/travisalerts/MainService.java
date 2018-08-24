@@ -25,12 +25,25 @@ public class MainService implements Runnable {
     //ENCODING
     private final String URL_ENCODING = "UTF-8";
 
+    //BRANCH/REPO
+    String repo, branch = "";
+    SlackNotifier sn;
+
+    public MainService(String repo, String branch, SlackNotifier sn)
+    {
+        this.repo = repo;
+        this.branch = branch;
+        this.sn = sn;
+    }
     /**
      * For repeating polling.
      */
     public MainService(PollingRecord pr)
     {
         this.pollingRecord = pr;
+        repo = pr.repo;
+        branch = pr.branch;
+        sn = pr.sn;
 
         //Check if we have a Travis token. If not, send an error message.
         if (TRAVIS_AUTH_TOKEN == null)
@@ -46,31 +59,12 @@ public class MainService implements Runnable {
      */
     public void run()
     {
-        boolean running = true;
 
-        while (running)
+        while (pollingRecord.active)
         {
-            running = pollingRecord.active;
             try
             {
-                String JsonObject = getAPIStringResponse(pollingRecord.repo, pollingRecord.branch);
-                Branch branch = JsonUtils.deserializeJson(JsonObject);
-                String buildURLTemplate = "https://travis-ci.com/%s/builds/%d";
-                String branchURL = String.format(buildURLTemplate, branch.repository.slug, branch.lastBuild.id);
-                if (branch.lastBuild.state.equals("passed")) {
-                    pollingRecord.sn.sendPassed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL );
-                }
-                else if (branch.lastBuild.state.equals("failed")) {
-                    pollingRecord.sn.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL);
-                }
-            }
-            catch(HttpClientErrorException|UnsupportedEncodingException e)
-            {
-                pollingRecord.sn.sendRepoBranchNotFound(pollingRecord.repo, pollingRecord.branch, e.toString());
-                running = false;
-            }
-            try
-            {
+                pollingRecord.active = pollAndNotify();
                 Thread.sleep(pollingRecord.poll);
             }
             catch(InterruptedException e)
@@ -81,6 +75,32 @@ public class MainService implements Runnable {
         }
     }
 
+    /**
+     * Polls Travis, returns to Slack with passed/failed state.
+     * @return false if a fatal error occurred.
+     */
+    public boolean pollAndNotify()
+    {
+        try
+        {
+            String JsonObject = getAPIStringResponse(repo, branch);
+            Branch branch = JsonUtils.deserializeJson(JsonObject);
+            String buildURLTemplate = "https://travis-ci.com/%s/builds/%d";
+            String branchURL = String.format(buildURLTemplate, branch.repository.slug, branch.lastBuild.id);
+            if (branch.lastBuild.state.equals("passed")) {
+                sn.sendPassed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL );
+            }
+            else if (branch.lastBuild.state.equals("failed")) {
+                sn.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL);
+            }
+        }
+        catch(HttpClientErrorException|UnsupportedEncodingException e)
+        {
+            sn.sendRepoBranchNotFound(repo, branch, e.toString());
+            return false;
+        }
+        return true;
+    }
     /**
      * Uses the parameters to get the JSON String representing the state of the identified build.
      * @param repo repo to poll.

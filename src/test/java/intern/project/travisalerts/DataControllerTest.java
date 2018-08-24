@@ -7,6 +7,7 @@ import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.channels.Channel;
 
 import static org.junit.Assert.assertEquals;
 
@@ -56,11 +57,20 @@ public class DataControllerTest {
     {
         DataController dc = new DataController();
 
-        PollingRecord record = new PollingRecord("mdsol/medistrano", "develop", "someChannelID", 3, true, new SlackNotifier("http://someReasonableURL.com"));
-        dc.createPollingRecord("mdsol/medistrano", "develop", "someChannelID", 3, true, new SlackNotifier("http://someReasonableURL.com"));
+        dc.createPollingRecord("mdsol/somethingelse", "develop", "someChannelID", 3, true, new SlackNotifier("http://someReasonableURL.com"));
 
         //Wipe the DC and make it read from file.
         dc = new DataController();
-        assert(dc.pollingData.contains(record));
+        boolean found = false;
+
+        for (PollingRecord record : dc.pollingData)
+            {
+                if (record.repo.contains("mdsol/dalton"))
+                {
+                    found = true;
+                }
+            }
+        assert(found);
+
     }
 }

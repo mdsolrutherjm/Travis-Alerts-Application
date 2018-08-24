@@ -14,19 +14,53 @@ public class SlackRequestController implements Runnable {
 
     public void run(){}
 
+    /**
+     * Functionality to respond to /getstatus command.
+     * @param request
+     */
     @RequestMapping(value ="/getstatus")
     public void getStatus(WebRequest request)
     {
+        String channelID = request.getParameter("channel_id"); //chanelID of slack channel
+
+        //new SlackNotifier object with same room as where request is from
+        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
+
+        //Array of each parameter sent. [0] = repo, [1] = branch.
+        String[] parameter = request.getParameter("text").split("");
+
+        //attempt to get the permanent URL of the channel invoking this method.
+        String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
+
+        //Validation checks
+        //checking if the current slack channel has already been configured
+        if (permanentURL == null)
+        {
+            response.sendSetupNewRoom(); // no room set-up - send an error message.
+        }
+        else if (parameter.length != 2) //check if 2 parameters have been sent
+        {
+            response.sendInvalidParameters(ConstantUtils.USAGE_GET_STATUS);
+        }
+
+        String repo = parameter[0]; //repo = first paramater
+        String branch = parameter[1]; //branch = second parameter
+        SlackNotifier slackRoom = new SlackNotifier(permanentURL); //slack room where request is from
+        MainService ms = new MainService(repo,branch, slackRoom);
+        ms.pollAndNotify();
     }
 
     @RequestMapping(value ="/startpolling", consumes = CONSUMES)
     public void startpolling(WebRequest request)
     {
-        String channelID = request.getParameter("channel_id");
-        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
-        String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
+        String channelID = request.getParameter("channel_id"); //chanelID of slack channel
 
-        //attempt to get the permenant URL of the channel invoking this method.
+        //new SlackNotifier object with same room as where request is from
+        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
+
+        String[] parameter = request.getParameter("text").split(""); //Array of each parameter sent.
+
+        //attempt to get the permanent URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
         //Validation checks - do we have all of the required parameters?

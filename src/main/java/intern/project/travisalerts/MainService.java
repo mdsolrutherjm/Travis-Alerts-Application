@@ -29,6 +29,12 @@ public class MainService implements Runnable {
     String repo, branch = "";
     SlackNotifier sn;
 
+    /**
+     * this constructor is called for get_status commands
+     * @param repo
+     * @param branch
+     * @param sn
+     */
     public MainService(String repo, String branch, SlackNotifier sn)
     {
         this.repo = repo;

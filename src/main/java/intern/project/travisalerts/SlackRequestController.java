@@ -58,7 +58,7 @@ public class SlackRequestController implements Runnable {
         //new SlackNotifier object with same room as where request is from
         SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
 
-        String[] parameter = request.getParameter("text").split(""); //Array of each parameter sent.
+        String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
         //attempt to get the permanent URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);

@@ -1,12 +1,20 @@
 package intern.project.travisalerts;
 
+import org.apache.tomcat.jni.Poll;
+
 import java.io.*;
+import java.nio.channels.Channel;
+import java.util.ArrayList;
 
 public class DataController {
     int size = 0;
     int pollingSize = 0;
-    String[][] channelData = new String[10][2]; //2d array with columns channelID and channelURL
-    PollingRecord[] pollingData = new PollingRecord[10];
+    //String[][] channelData = new String[10][2]; //2d array with columns channelID and channelURL
+    //PollingRecord[] pollingData = new PollingRecord[10];
+
+    //ArrayLists
+    ArrayList<PollingRecord> pollingData = new ArrayList<PollingRecord>();
+    ArrayList<ChannelRecord> channelData = new ArrayList<ChannelRecord>();
 
     /**
      * this method is called when our program starts.
@@ -20,29 +28,18 @@ public class DataController {
          * is empty. If not, do not do this.
           */
         String fileName = "channelDB.txt"; //get .txt file
-        System.out.println(channelData[0][0]);
-        if ((channelData[0][0] == null) && (channelData[0][1] == null)) { //if channelData is empty
+        if (channelData.isEmpty()) { //if channelData is empty
             try {
                 FileReader fr = new FileReader(fileName);
                 BufferedReader br = new BufferedReader(fr); //object to read .txt file
                 String line;
-                int i =0; //initialize counter
                 while ((line = br.readLine()) != null){ //continues to read through the whole file
                     String[] channelElements = line.split(","); //split the line by comma instances
-                    channelData[i][0] = channelElements[0];
-                    channelData[i][1] = channelElements[1];
-                    System.out.println(channelData[i][0] +","+ channelData[i][1] );
-                    i++;
+                    channelData.add(new ChannelRecord(channelElements[0], channelElements[1]));
                 }
-                size = i;
             }
             catch (IOException e){System.out.println("Failed to read file: "+fileName+"/n"+e.toString());}
         }
-    }
-
-    private String[][] returnChannels()
-    {
-        return channelData;
     }
 
     /**
@@ -55,10 +52,7 @@ public class DataController {
      */
     public void addChannel(String name, String url)
     {
-        System.out.println("NEW CHANNEL: " + name + " " + url);
-        channelData[size][0] = name;
-        channelData[size][1] = url;
-        size++;
+        channelData.add(new ChannelRecord(name, url));
 
 
         /**
@@ -96,14 +90,14 @@ public class DataController {
     public String getChannelURL(String name)
     {
         System.out.println("SEARCHING FOR CHANNEL " + name);
-        for (int i = 0; i < size; i++)
-        {
-            if (channelData[i][0].equals(name))
-            {
-                return channelData[i][1];
-            }
-        }
-        return null;
+         for (ChannelRecord channel: channelData)
+         {
+             if (channel.id.contains(name))
+             {
+                 return channel.url;
+             }
+         }
+         return null;
     }
 
     /**
@@ -112,10 +106,9 @@ public class DataController {
      */
     public PollingRecord createPollingRecord(String repo, String branch, String channelID, int poll, boolean active, SlackNotifier sn)
     {
-        int id = pollingSize;
-        pollingData[id] = new PollingRecord(repo, branch, channelID, poll, active, sn);
-        pollingSize++;
-        return pollingData[id];
+        PollingRecord pr = new PollingRecord(repo, branch, channelID, poll, active, sn);
+        pollingData.add(pr);
+        return pr;
     }
 
     /**
@@ -125,11 +118,11 @@ public class DataController {
      */
     public boolean cancelPollingRecord(String channelID, String repo, String branch)
     {
-        for (int i = 0; i < pollingSize; i++)
+        for (PollingRecord record: pollingData)
         {
-            if ((pollingData[i].channelID.equals(channelID)) && (pollingData[i].repo.equals(repo)) && (pollingData[i].branch.equals(branch)))
+            if ((record.channelID.contains(channelID)) && (record.repo.contains(repo)) && (record.branch.contains(branch)))
             {
-                pollingData[i].active = false;
+                record.active = false;
                 return true;
             }
         }

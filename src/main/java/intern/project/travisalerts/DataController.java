@@ -1,20 +1,12 @@
 package intern.project.travisalerts;
 
-import org.apache.tomcat.jni.Poll;
-
 import java.io.*;
-import java.nio.channels.Channel;
 import java.util.ArrayList;
 
 public class DataController {
-    int size = 0;
-    int pollingSize = 0;
-    //String[][] channelData = new String[10][2]; //2d array with columns channelID and channelURL
-    //PollingRecord[] pollingData = new PollingRecord[10];
-
     //ArrayLists
-    ArrayList<PollingRecord> pollingData = new ArrayList<PollingRecord>();
-    ArrayList<ChannelRecord> channelData = new ArrayList<ChannelRecord>();
+    ArrayList<PollingRecord> pollingData = new ArrayList<>();
+    ArrayList<ChannelRecord> channelData = new ArrayList<>();
 
     /**
      * this method is called when our program starts.

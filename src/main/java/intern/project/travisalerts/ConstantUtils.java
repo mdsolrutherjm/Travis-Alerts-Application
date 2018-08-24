@@ -3,7 +3,7 @@ package intern.project.travisalerts;
 public class ConstantUtils {
     //usages
     public static final String USAGE_START_POLLING = "/startpolling [repo] [branch] [minutes]";
-
+    public static final String USAGE_GET_STATUS = "/getstatus [repo] [branch]";
     public static final String FIRST_TIME_CONFIG_RESPONSE = "Hello! I'm Travis Alerts. I keep this channel notified of any specified GitHub branches that are in failed state on Travis-CI. To get started, type the command below.";
     public static final String ENV_CLIENT_ID = "TRAVIS_ALERTS_CLIENT_ID";
     public static final String ENV_CLIENT_SECRET = "TRAVIS_ALERTS_CLIENT_SECRET";

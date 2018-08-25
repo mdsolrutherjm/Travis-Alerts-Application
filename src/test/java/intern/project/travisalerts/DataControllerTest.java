@@ -65,7 +65,7 @@ public class DataControllerTest {
 
         for (PollingRecord record : dc.pollingData)
             {
-                if (record.repo.contains("mdsol/dalton"))
+                if (record.repo.contains("mdsol/somethingelse"))
                 {
                     found = true;
                 }

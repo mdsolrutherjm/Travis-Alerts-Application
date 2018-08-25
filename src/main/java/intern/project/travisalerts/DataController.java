@@ -185,4 +185,14 @@ public class DataController {
             return 0;
         }
     }
+
+    /**
+     * When TravisAlertsApplication loads, we need to create new polling services from each record.
+     * This accessor provides those records in an ArrayList.
+     * @return List of pollingrecords.
+     * */
+    public ArrayList<PollingRecord> getPollingRecords()
+    {
+        return pollingData;
+    }
 }

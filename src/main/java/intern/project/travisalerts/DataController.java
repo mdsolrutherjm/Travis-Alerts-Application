@@ -27,6 +27,7 @@ public class DataController {
                 BufferedReader br = new BufferedReader(fr); //object to read .txt file
                 String line;
                 while ((line = br.readLine()) != null){ //continues to read through the whole file
+                    System.out.println(line);
                     String[] channelElements = line.split(","); //split the line by comma instances
                     channelData.add(new ChannelRecord(channelElements[0], channelElements[1]));
                 }
@@ -62,7 +63,10 @@ public class DataController {
         try {
             fw = new FileWriter(fileName);
             bw = new BufferedWriter(fw);
-            bw.write(name+","+url);
+            for (ChannelRecord record: channelData){
+                bw.write(record.id+"," + record.url + "\n");
+
+            }
         }
         catch (IOException e) {e.printStackTrace();}
 
@@ -120,6 +124,7 @@ public class DataController {
             if ((record.channelID.contains(channelID)) && (record.repo.contains(repo)) && (record.branch.contains(branch)))
             {
                 record.active = false;
+                writePollingRecordToDisk(); //We no longer want this in our records - update the text file.
                 return true;
             }
         }
@@ -132,8 +137,11 @@ public class DataController {
             BufferedWriter write = new BufferedWriter(new FileWriter(ConstantUtils.FILE_POLLING_RECORD, false));
             for (PollingRecord r: pollingData)
             {
+                if (r.active) //is this a polling record that is actually in use?
+                {
+                    write.write(r.repo + "," + r.branch + "," + r.channelID + "," +  r.poll +"\n");
 
-                write.write(r.repo + "," + r.branch + "," + r.channelID + "," +  r.poll +"\n");
+                }
             }
             write.close(); //finish with the file.
         }

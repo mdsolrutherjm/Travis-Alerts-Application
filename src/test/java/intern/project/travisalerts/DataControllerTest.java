@@ -3,9 +3,11 @@ package intern.project.travisalerts;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.channels.Channel;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,6 +49,28 @@ public class DataControllerTest {
         {
             assert(channel.id.contains("channelid"));
         }
+
+    }
+    //Testing RecordPolling read/write functionality
+    @Test
+    public void canWritePollingRecordsToFileOK()
+    {
+        DataController dc = new DataController();
+
+        dc.createPollingRecord("mdsol/somethingelse", "develop", "someChannelID", 3, true, new SlackNotifier("http://someReasonableURL.com"));
+
+        //Wipe the DC and make it read from file.
+        dc = new DataController();
+        boolean found = false;
+
+        for (PollingRecord record : dc.pollingData)
+            {
+                if (record.repo.contains("mdsol/somethingelse"))
+                {
+                    found = true;
+                }
+            }
+        assert(found);
 
     }
 }

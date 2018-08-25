@@ -1,5 +1,7 @@
 package intern.project.travisalerts;
 
+import org.apache.tomcat.util.bcel.Const;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -14,7 +16,6 @@ public class DataController {
      */
     public DataController()
     {
-
         /**
          * add functionality to constructor to unpack each line in the text file as a row in channelData, if channelData
          * is empty. If not, do not do this.
@@ -32,6 +33,8 @@ public class DataController {
             }
             catch (IOException e){System.out.println("Failed to read file: "+fileName+"/n"+e.toString());}
         }
+        readPollingRecordFromDisk();
+
     }
 
     /**
@@ -100,6 +103,8 @@ public class DataController {
     {
         PollingRecord pr = new PollingRecord(repo, branch, channelID, poll, active, sn);
         pollingData.add(pr);
+
+        writePollingRecordToDisk();
         return pr;
     }
 
@@ -120,5 +125,74 @@ public class DataController {
         }
         return false;
     }
+    public void writePollingRecordToDisk()
+    {
+        try
+        {
+            BufferedWriter write = new BufferedWriter(new FileWriter(ConstantUtils.FILE_POLLING_RECORD, false));
+            for (PollingRecord r: pollingData)
+            {
 
+                write.write(r.repo + "," + r.branch + "," + r.channelID + "," +  r.poll +"\n");
+            }
+            write.close(); //finish with the file.
+        }
+        catch (IOException e)
+        {
+            //is this error handling really enough?
+            System.out.println("ERROR: could not write to " + ConstantUtils.FILE_POLLING_RECORD);
+        }
+    }
+    public void readPollingRecordFromDisk()
+    {
+        try
+        {
+            BufferedReader read = new BufferedReader(new FileReader(ConstantUtils.FILE_POLLING_RECORD));
+            String line;
+            try
+            {
+                while ((line = read.readLine()) != null) {
+                    String[] elements = line.split(","); //split the line by comma instances
+                    PollingRecord pr = new PollingRecord(elements[0], elements[1], elements[2], convertToInteger(elements[3]), true, new SlackNotifier(getChannelURL(elements[2])));
+                    pollingData.add(pr);
+                    }
+            }
+            catch (IOException e)
+            {
+                System.out.println("ERROR: could not read from " + ConstantUtils.FILE_POLLING_RECORD);
+            }
+
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("ERROR: Missing " + ConstantUtils.FILE_POLLING_RECORD + ". This is OK if this is a clean boot. ");
+        }
+    }
+    /**
+     * Converts strings to integers.
+     * Returns '0' if the number was not converted.
+     * @param s String to convert to integer
+     * @return the converted value.
+     */
+    public int convertToInteger(String s)
+    {
+        try
+        {
+            return Integer.parseInt(s);
+        }
+        catch (NumberFormatException e)
+        {
+            return 0;
+        }
+    }
+
+    /**
+     * When TravisAlertsApplication loads, we need to create new polling services from each record.
+     * This accessor provides those records in an ArrayList.
+     * @return List of pollingrecords.
+     * */
+    public ArrayList<PollingRecord> getPollingRecords()
+    {
+        return pollingData;
+    }
 }

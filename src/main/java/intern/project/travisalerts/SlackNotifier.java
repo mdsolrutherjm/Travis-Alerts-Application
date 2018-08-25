@@ -144,4 +144,8 @@ public class SlackNotifier {
         HttpEntity<String> request = new HttpEntity<String>(json, headers);
         restTemplate.exchange(URL, HttpMethod.POST, request, String.class);
     }
+    public String getURL()
+    {
+        return URL;
+    }
 }

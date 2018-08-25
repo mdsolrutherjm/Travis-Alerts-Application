@@ -5,7 +5,7 @@
 
 	<groupId>intern.project</groupId>
 	<artifactId>travis-alerts</artifactId>
-	<version>0.2.0-master</version>
+	<version>0.2.1-MASTER</version>
 	<packaging>jar</packaging>
 
 	<name>travis-alerts</name>

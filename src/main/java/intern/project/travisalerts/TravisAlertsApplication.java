@@ -1,5 +1,6 @@
 package intern.project.travisalerts;
 
+import org.apache.tomcat.jni.Poll;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.client.HttpClientErrorException;
@@ -10,7 +11,7 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class TravisAlertsApplication {
-    public static DataController dc = new DataController();
+    public static DataController dc = new DataController(); //Load in any saved-state configuration.
     //AUTHORIZATION
     static Map<String, String> env = System.getenv();
     private static String TRAVIS_AUTH_TOKEN = env.get("TRAVIS_TOKEN");
@@ -20,9 +21,19 @@ public class TravisAlertsApplication {
 
         Scanner inputListener = new Scanner(System.in);
         String arg0,arg1,arg2,arg3 = "";
-        //healthCheck(); //Check all env variables are present.
 
-        loadPolling();
+
+        //Run a health check to ensure that all of the environment variables have been loaded correctly.
+        healthCheck(); //Check all env variables are present.
+
+
+        //Create new threads for the loaded PollingRecords.
+        for (PollingRecord record: dc.getPollingRecords())
+        {
+            new Thread(new MainService(record)).start(); //Create a new polling service for each record.
+        }
+
+        //start accepting user commands.
 		while (programState)
         {
             System.out.print("Travis Alerts > ");
@@ -65,15 +76,6 @@ public class TravisAlertsApplication {
 	public static void help()
     {
         System.out.println("Commands: \n");
-    }
-
-	public static void loadPolling() {
-        System.out.println("Loading configuration");
-
-        //Read file
-        //Extract information
-        //Start new threads accordingly
-        //creating a every-1-min poll for study_management develop branch.
     }
 
     /**

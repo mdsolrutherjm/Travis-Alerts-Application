@@ -13,4 +13,6 @@ public class ConstantUtils {
     public static final String TERMINATING_POLLING = "Terminating %s@%s";
     public static final String TERMINATING_POLLING_ERROR = "Could not terminate %s@%s. Are you sure it was configured to be polled? ";
 
+    //FILE WRITING CONFIGURATION
+    public static final String FILE_POLLING_RECORD = "pollingRecords.csv";
 }

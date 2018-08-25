@@ -10,5 +10,7 @@ A Java-based application designed to poll Travis CI on a basis specified by the 
 3.3 'TRAVIS_ALERTS_CLIENT_SECRET' - the client secret for the Slack app. 
 #Configuring new channels
 1. Go to [YOURSERVERHOSTNAME]/newchannel and follow the instructions on-screen.
-2. On the newly configured channel, type /addbranch [repo] [branch] to start polling a new branch.
-3. Type /startpolling [time] to commence polling.
+2. On the newly configured channel, type /addbranch [repo] [branch] [interval] to start polling a new branch.
+
+Stopping a Polling Service
+1. Type the command /stoppolling [repo] [branch]

@@ -14,7 +14,7 @@ public class TravisAlertsApplication {
 		SpringApplication.run(TravisAlertsApplication.class, args);
 
         Scanner inputListener = new Scanner(System.in);
-        String arg0 = "";
+        String arg0;
 
 
         //Run a health check to ensure that all of the environment variables have been loaded correctly.

@@ -1,9 +1,7 @@
 package intern.project.travisalerts;
-
-import org.apache.tomcat.util.bcel.Const;
-
 import java.io.*;
 import java.util.ArrayList;
+import static intern.project.travisalerts.ConstantUtils.*;
 
 public class DataController {
     //ArrayLists
@@ -20,7 +18,15 @@ public class DataController {
          * add functionality to constructor to unpack each line in the text file as a row in channelData, if channelData
          * is empty. If not, do not do this.
           */
-        String fileName = "channelDB.txt"; //get .txt file
+        readChannelRecordsFromDisk();
+        readPollingRecordFromDisk();
+
+    }
+
+    public void readChannelRecordsFromDisk()
+    {
+        String fileName = FILE_CHANNEL_RECORD; //get .txt file
+
         if (channelData.isEmpty()) { //if channelData is empty
             try {
                 FileReader fr = new FileReader(fileName);
@@ -32,12 +38,11 @@ public class DataController {
                     channelData.add(new ChannelRecord(channelElements[0], channelElements[1]));
                 }
             }
-            catch (IOException e){System.out.println("Failed to read file: "+fileName+"/n"+e.toString());}
+            catch (IOException e){
+                System.out.println(String.format(FAILED_IOEX_READING_FILE, fileName, e.toString()));
+            }
         }
-        readPollingRecordFromDisk();
-
     }
-
     /**
 
      * Method called when /configure command received from webpage (i.e. when a channel is configured)
@@ -56,19 +61,20 @@ public class DataController {
          * Needs to be such that this data in the text file remains even when the server goes down.
          */
 
-        String fileName = "channelDB.txt";
+        String fileName = FILE_CHANNEL_RECORD;
         BufferedWriter bw = null;
         FileWriter fw = null;
 
         try {
             fw = new FileWriter(fileName);
             bw = new BufferedWriter(fw);
+
+            //write each record to the file.
             for (ChannelRecord record: channelData){
                 bw.write(record.id+"," + record.url + "\n");
-
             }
         }
-        catch (IOException e) {e.printStackTrace();}
+        catch (IOException e) {System.out.println(String.format(FAILED_IOEX_WRITING_FILE, fileName, e.toString()));}
 
         finally {
             try {
@@ -77,7 +83,7 @@ public class DataController {
 
                 if (fw != null)
                     fw.close();
-            } catch (IOException ex) { ex.printStackTrace(); }
+            } catch (IOException ex) {System.out.println(String.format(FAILED_IOEX_WRITING_FILE, fileName, ex.toString()));}
         }
     }
 
@@ -96,7 +102,7 @@ public class DataController {
                  return channel.url;
              }
          }
-         return null;
+         return null; //Channel wasn't found.
     }
 
     /**
@@ -107,6 +113,7 @@ public class DataController {
     {
         PollingRecord pr = new PollingRecord(repo, branch, channelID, poll, active, sn);
         pollingData.add(pr);
+
 
         writePollingRecordToDisk();
         return pr;
@@ -148,14 +155,14 @@ public class DataController {
         catch (IOException e)
         {
             //is this error handling really enough?
-            System.out.println("ERROR: could not write to " + ConstantUtils.FILE_POLLING_RECORD);
+            System.out.println(String.format(FILE_POLLING_RECORD, FILE_POLLING_RECORD, e.toString()));
         }
     }
     public void readPollingRecordFromDisk()
     {
         try
         {
-            BufferedReader read = new BufferedReader(new FileReader(ConstantUtils.FILE_POLLING_RECORD));
+            BufferedReader read = new BufferedReader(new FileReader(FILE_POLLING_RECORD));
             String line;
             try
             {
@@ -167,13 +174,13 @@ public class DataController {
             }
             catch (IOException e)
             {
-                System.out.println("ERROR: could not read from " + ConstantUtils.FILE_POLLING_RECORD);
+                System.out.println(String.format(FAILED_IOEX_READING_FILE, FILE_POLLING_RECORD, e.toString()));
             }
 
         }
         catch (FileNotFoundException e)
         {
-            System.out.println("ERROR: Missing " + ConstantUtils.FILE_POLLING_RECORD + ". This is OK if this is a clean boot. ");
+            System.out.println(String.format(FAILED_MISSING_FILE, FILE_POLLING_RECORD, e.toString()));
         }
     }
     /**

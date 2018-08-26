@@ -15,4 +15,12 @@ public class ConstantUtils {
 
     //FILE WRITING CONFIGURATION
     public static final String FILE_POLLING_RECORD = "pollingRecords.csv";
+    public static final String FILE_CHANNEL_RECORD = "channelRecords.csv";
+
+
+    //FAILED MESSAGES.
+    public static final String FAILED_IOEX_READING_FILE = "ERROR: Encountered IO Exception when reading from %s. Full error is provided below. \n(%s)";
+    public static final String FAILED_IOEX_WRITING_FILE = "ERROR: Encountered IO Exception when writing to %s. Full error is provided below. \n(%s)";
+    public static final String FAILED_MISSING_FILE = "ERROR: Could not find %s. This is OK if this is a clean-boot. ";
+
 }

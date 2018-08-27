@@ -36,4 +36,9 @@ public class SlackNotifierTest {
     {
         sf.sendUsageWithDescription("this is the description", "somecommand", "somecommand [someparameter]");
     }
+    @Test
+    public void sendsAlreadyBeingPolled()
+    {
+        sf.sendRepoBranchAlreadyBeingPolled("mdsol/study_management", "develop");
+    }
 }

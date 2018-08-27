@@ -1,4 +1,6 @@
 package intern.project.travisalerts;
+import org.apache.tomcat.jni.Poll;
+
 import java.io.*;
 import java.util.ArrayList;
 import static intern.project.travisalerts.ConstantUtils.*;
@@ -119,6 +121,40 @@ public class DataController {
         return pr;
     }
 
+    /**
+     * Checks if this channel has already been configured based on its name.
+     * @param channelID the ID of the channel
+     * @return true if it already exists.
+     */
+    public boolean isChannelAlreadyConfigured(String channelID, String channelURL)
+    {
+        for (ChannelRecord record: channelData)
+        {
+            if ((record.id.contains(channelID)) && (record.url.contains(channelURL)))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * Checks if this repo/branch is already being polled for this channel.
+     * @param channelID the ID of the channel
+     * @param repo repo
+     * @param branch branch.
+     * @return true if it already exists.
+     */
+    public boolean isRepoBranchAlreadyBeingPolled(String repo, String branch, String channelID)
+    {
+        for (PollingRecord record: pollingData)
+        {
+            if ((record.repo.contains(repo)) && (record.branch.contains(branch)) && (record.channelID.contains(channelID)))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Identifies the PollingRecord to halt polling for and returns true IF it was successful.
      * Parameters identify the PollingRecord uniquely.

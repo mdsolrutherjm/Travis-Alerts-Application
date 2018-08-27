@@ -71,10 +71,11 @@ public class WebRequestController {
 
             if (slackAuth.ok != true)
             {
+                //Slack will return false in the 'ok' field if there was an issue during processing.
+                //This reasonably indicates to us whether or not as to if the rest of the data in the response is going to be useful or if we should just stop here.
                 return slackConfigError("Channel Information couldn't be retrieved. Is Slack alive? Check that the " + ConstantUtils.ENV_CLIENT_ID + ", " + ConstantUtils.ENV_CLIENT_SECRET + ", " + ConstantUtils.ENV_TRAVIS_TOKEN + " settings are accurate on the server-side.  ");
             }
-            else
-            {
+            else{
                 TravisAlertsApplication.dc.addChannel(slackAuth.incomingWebhook.channelID, slackAuth.incomingWebhook.channelURL);
                 new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendUsageWithDescription(ConstantUtils.FIRST_TIME_CONFIG_RESPONSE, "startpolling", ConstantUtils.USAGE_START_POLLING);
                 try

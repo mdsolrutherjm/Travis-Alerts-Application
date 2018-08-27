@@ -119,6 +119,12 @@ public class SlackNotifier {
         String description = String.format("(%s)", e);
         sendJson(String.format(ERROR_PROCESSING, title, description, FAILED_COLOUR));
     }
+    public void sendRepoBranchAlreadyBeingPolled(String repo, String branch)
+    {
+        String title = String.format("Travis Alerts was unable to poll %s@%s.", repo, branch);
+        String description = String.format("The requested repo/branch is already being polled for this channel. ");
+        sendJson(String.format(ERROR_PROCESSING, title, description, FAILED_COLOUR));
+    }
     /**
      * Sends a standard error message for if the polling service returned 404 not found.
      */

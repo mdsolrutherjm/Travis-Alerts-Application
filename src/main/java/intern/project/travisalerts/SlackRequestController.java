@@ -63,6 +63,7 @@ public class SlackRequestController implements Runnable {
         //attempt to get the permanent URL of the channel invoking this method.
         String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
+
         //Validation checks - do we have all of the required parameters?
         if (permanentURL == null) //do we have a permanent room URL??
         {
@@ -74,12 +75,17 @@ public class SlackRequestController implements Runnable {
         }
         else
         {
+            String repo = parameter[0];
+            String branch = parameter[1];
             int minutes = convertToInteger(parameter[2]);
-            //Validation checks - are these parameters valid?
-            if (minutes > 0) //Our converter returns '0' if minutes is invalid.
+
+            //Validation checks - has this repo/branch already been configured?
+            if (TravisAlertsApplication.dc.isRepoBranchAlreadyBeingPolled(repo, branch, channelID))
             {
-                String repo = parameter[0];
-                String branch = parameter[1];
+                response.sendRepoBranchAlreadyBeingPolled(repo, branch);
+            }
+            else if (minutes > 0) //Our converter returns '0' if minutes is invalid.
+            {
                 Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permanentURL))));
                 t.start();
             }

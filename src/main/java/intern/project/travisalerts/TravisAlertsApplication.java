@@ -48,7 +48,7 @@ public class TravisAlertsApplication {
             switch(arg0)
             {
                 case "exit":
-                    programState = false;
+                    System.exit(0);
                     break;
                 case "help":
                     help();

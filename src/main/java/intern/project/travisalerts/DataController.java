@@ -27,23 +27,33 @@ public class DataController {
 
     public void readChannelRecordsFromDisk()
     {
-        String fileName = FILE_CHANNEL_RECORD; //get .txt file
+        //Create a file object for the channel records file
+        File file = new File(FILE_CHANNEL_RECORD);
 
-        if (channelData.isEmpty()) { //if channelData is empty
-            try {
-                FileReader fr = new FileReader(fileName);
-                BufferedReader br = new BufferedReader(fr); //object to read .txt file
-                String line;
-                while ((line = br.readLine()) != null){ //continues to read through the whole file
-                    System.out.println(line);
-                    String[] channelElements = line.split(","); //split the line by comma instances
-                    channelData.add(new ChannelRecord(channelElements[0], channelElements[1]));
+        if (file.exists()) //Only attempt to read the file if we know it exists.
+        {
+            if (channelData.isEmpty()) { //if channelData is empty
+                try {
+                    FileReader fr = new FileReader(file);
+                    BufferedReader br = new BufferedReader(fr); //object to read .txt file
+                    String line;
+                    while ((line = br.readLine()) != null){ //continues to read through the whole file
+                        //Split the line up into separate elements.
+                        String[] channelElements = line.split(","); //split the line by comma instances
+                        //Load those elements into a record within the ArrayList
+                        channelData.add(new ChannelRecord(channelElements[0], channelElements[1]));
+                    }
+                }
+                catch (IOException e){
+                    System.out.println(String.format(FAILED_IOEX_READING_FILE, file.toString(), e.toString()));
                 }
             }
-            catch (IOException e){
-                System.out.println(String.format(FAILED_IOEX_READING_FILE, fileName, e.toString()));
-            }
         }
+        else
+        {
+            System.out.println(String.format(FAILED_MISSING_FILE, FILE_CHANNEL_RECORD));
+        }
+
     }
     /**
 
@@ -196,28 +206,32 @@ public class DataController {
     }
     public void readPollingRecordFromDisk()
     {
-        try
+        File file = new File(FILE_POLLING_RECORD);
+
+        if (file.exists()) //Only attempt to read the file if we know it exists.
         {
-            BufferedReader read = new BufferedReader(new FileReader(FILE_POLLING_RECORD));
-            String line;
-            try
-            {
-                while ((line = read.readLine()) != null) {
-                    String[] elements = line.split(","); //split the line by comma instances
-                    PollingRecord pr = new PollingRecord(elements[0], elements[1], elements[2], convertToInteger(elements[3]), true, new SlackNotifier(getChannelURL(elements[2])));
-                    pollingData.add(pr);
+                try
+                {
+                    FileReader fr = new FileReader(file);
+                    BufferedReader read = new BufferedReader(fr);
+                    String line;
+                    while ((line = read.readLine()) != null) { //Continues to read through the whole file.
+                        //Split the line up into separate elements.
+                        String[] elements = line.split(",");
+                        //Load those elements into a record within the ArrayList
+                        pollingData.add(new PollingRecord(elements[0], elements[1], elements[2], convertToInteger(elements[3]), true, new SlackNotifier(getChannelURL(elements[2]))));
                     }
+                }
+                catch (IOException e)
+                {
+                    System.out.println(String.format(FAILED_IOEX_READING_FILE, file.toString(), e.toString()));
+                }
             }
-            catch (IOException e)
+           else
             {
-                System.out.println(String.format(FAILED_IOEX_READING_FILE, FILE_POLLING_RECORD, e.toString()));
+                System.out.println(String.format(FAILED_MISSING_FILE, FILE_POLLING_RECORD));
             }
 
-        }
-        catch (FileNotFoundException e)
-        {
-            System.out.println(String.format(FAILED_MISSING_FILE, FILE_POLLING_RECORD, e.toString()));
-        }
     }
     /**
      * Converts strings to integers.

@@ -83,9 +83,10 @@ public class SlackRequestController implements Runnable {
                     //Record for this repo and branch already exists.
                     if (existingRecord.status() == false) //Check if the existing record is active or not.
                     {
-                    //Re-enable the record and update the time parameter.
+                    //Re-enable the record and update the time parameter, then load a new thread for this record.
                     existingRecord.setPollingInterval(minutes);
                     existingRecord.activate();
+                    new Thread(new MainService(existingRecord)).start();
                     }
                     else
                     {

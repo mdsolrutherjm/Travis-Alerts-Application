@@ -17,7 +17,7 @@ public class TravisAlertsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TravisAlertsApplication.class, args);
-
+		System.out.println(ConstantUtils.STARTING_LOGO);
 
 
         //Run a health check to ensure that all of the environment variables have been loaded correctly.

@@ -35,4 +35,13 @@ public class ConstantUtils {
 
     //OTHER
     public static final String TERMINATING_POLLING = "Terminating %s@%s";
+    public static final String STARTING_LOGO = "\n" +
+            "  _______                  _                  _              _        \n" +
+            " |__   __|                (_)          /\\    | |            | |       \n" +
+            "    | | _ __  __ _ __   __ _  ___     /  \\   | |  ___  _ __ | |_  ___ \n" +
+            "    | || '__|/ _` |\\ \\ / /| |/ __|   / /\\ \\  | | / _ \\| '__|| __|/ __|\n" +
+            "    | || |  | (_| | \\ V / | |\\__ \\  / ____ \\ | ||  __/| |   | |_ \\__ \\\n" +
+            "    |_||_|   \\__,_|  \\_/  |_||___/ /_/    \\_\\|_| \\___||_|    \\__||___/\n" +
+            "                                                                      \n" +
+            "                                                                      \n";
 }

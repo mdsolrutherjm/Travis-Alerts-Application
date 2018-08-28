@@ -1,5 +1,4 @@
 package intern.project.travisalerts;
-import org.apache.tomcat.jni.Poll;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -106,7 +105,6 @@ public class DataController {
      */
     public String getChannelURL(String name)
     {
-        System.out.println("SEARCHING FOR CHANNEL " + name);
          for (ChannelRecord channel: channelData)
          {
              if (channel.id.contains(name))

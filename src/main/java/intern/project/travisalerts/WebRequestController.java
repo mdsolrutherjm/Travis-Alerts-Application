@@ -66,7 +66,6 @@ public class WebRequestController {
         {
             ResponseEntity<String> response = restTemplate.postForEntity("https://slack.com/api/oauth.access", request, String.class);
 
-            System.out.println(response.getBody());
             SlackAuthJSON slackAuth = JsonUtils.deserializeSlackAuth(response.getBody());
 
             if (slackAuth.ok != true)

@@ -4,6 +4,7 @@ public class ConstantUtils {
     //FILE NAMES
     public static final String FILE_POLLING_RECORD = "pollingRecords.csv";
     public static final String FILE_CHANNEL_RECORD = "channelRecords.csv";
+    public static final String FILE_SYSTEM_CONFIGURATION = "configuration.csv";
 
 
     //ENVIRONMENT VARIABLES - NAMES.

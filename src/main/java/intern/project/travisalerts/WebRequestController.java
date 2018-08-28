@@ -102,7 +102,7 @@ public class WebRequestController {
     {
         try
         {
-            return StreamUtils.copyToString( new ClassPathResource("newchannel.html").getInputStream(), Charset.defaultCharset()  );
+            return String.format(StreamUtils.copyToString( new ClassPathResource("newchannel.html").getInputStream(), Charset.defaultCharset()  ), TravisAlertsApplication.config.clientID());
         }
         catch (IOException e)
         {

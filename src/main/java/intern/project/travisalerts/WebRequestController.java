@@ -1,7 +1,5 @@
 package intern.project.travisalerts;
 
-import org.apache.tomcat.util.bcel.Const;
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.request.WebRequest;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -24,23 +20,9 @@ import java.util.Map;
 @RestController
 
 public class WebRequestController {
-    static Map<String, String> env = System.getenv();
-    private static String CLIENT_ID = env.get(ConstantUtils.ENV_CLIENT_ID);
-    private static String CLIENT_SECRET = env.get(ConstantUtils.ENV_CLIENT_SECRET);
-
     private final String INTERNAL_HTML_MISSING = "A project HTML document was missing. Rebuild this Java Application. ";
-    public WebRequestController()
-    {
-        if (CLIENT_ID == null)
-        {
-            System.out.println(
-                    ConstantUtils.MISSING_ENV_VARIABLE);
-        }
-        if (CLIENT_SECRET == null)
-        {
-            System.out.println(ConstantUtils.MISSING_ENV_VARIABLE);
-        }
-    }
+
+
     @RequestMapping(value ="/app_status")
     public String app_status()
     {
@@ -56,8 +38,8 @@ public class WebRequestController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("client_id", CLIENT_ID);
-        map.add("client_secret", CLIENT_SECRET);
+        map.add("client_id", TravisAlertsApplication.config.clientID());
+        map.add("client_secret", TravisAlertsApplication.config.clientSecret());
         map.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map,headers);

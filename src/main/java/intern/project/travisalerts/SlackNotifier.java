@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.swing.table.TableRowSorter;
+
 
 public class SlackNotifier {
     private final String PASSED_COLOUR = "#36a64f";
@@ -19,7 +21,7 @@ public class SlackNotifier {
     {
         this.URL = url;
     }
-
+    private final String CHANNEL_SETUP_LINK = "https://slack.com/oauth/authorize?client_id=%s&scope=incoming-webhook,commands";
     //Template for the passed/failed build description (to go within the template)
     private final String DESCRIPTION = "Build #%d %s (%s, %s)\n%s@%s";
     private final String INVALID_PARAMETERS = "The specified query parameters are invalid. ";
@@ -49,7 +51,7 @@ public class SlackNotifier {
             "                {\n" +
             "                    \"type\": \"button\",\n" +
             "                    \"text\": \"Set up Travis Alerts\",\n" +
-            "                    \"url\": \"http://travisalertdemo-sandbox.imedidata.net/newchannel\"\n" +
+            "                    \"url\": \""+CHANNEL_SETUP_LINK+"\"\n" +
             "                }\n" +
             "            ]\n" +
             "        }\n" +
@@ -108,7 +110,7 @@ public class SlackNotifier {
      */
     public void sendSetupNewRoom()
     {
-        sendJson(SETUP_NEW_ROOM);
+        sendJson(String.format(SETUP_NEW_ROOM, TravisAlertsApplication.config.clientID()));
     }
     /**
      * Sends a standard error message for if the polling service returned 404 not found.

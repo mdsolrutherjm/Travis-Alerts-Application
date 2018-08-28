@@ -164,23 +164,24 @@ public class DataController {
         }
         return false;
     }
+
     /**
-     * Checks if this repo/branch is already being polled for this channel.
-     * @param channelID the ID of the channel
-     * @param repo repo
-     * @param branch branch.
-     * @return true if it already exists.
+     * Finds a polling record based on its associated repo, branch and channel ID.
+     * @param repo Repo name
+     * @param branch Branch name
+     * @param channelID Associated channel name
+     * @return The associated polling record.
      */
-    public boolean isRepoBranchAlreadyBeingPolled(String repo, String branch, String channelID)
+    public PollingRecord getPollingRecord(String repo, String branch, String channelID)
     {
         for (PollingRecord record: pollingData)
         {
             if ((record.repo.contains(repo)) && (record.branch.contains(branch)) && (record.channelID.contains(channelID)))
             {
-                return true;
+                return record; //Found the record - return it.
             }
         }
-        return false;
+        return null; //No record found - return null.
     }
     /**
      * Identifies the PollingRecord to halt polling for and returns true IF it was successful.

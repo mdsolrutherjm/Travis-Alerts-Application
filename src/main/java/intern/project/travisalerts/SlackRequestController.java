@@ -66,20 +66,39 @@ public class SlackRequestController implements Runnable {
             int minutes = convertToInteger(parameter[2]);
             String permenantURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
+            //Find any existing record which matches the specified repo and branch for this channel.
+            PollingRecord existingRecord = TravisAlertsApplication.dc.getPollingRecord(repo, branch, channelID);
+
             //Validation checks - has this repo/branch already been configured?
-            if (TravisAlertsApplication.dc.isRepoBranchAlreadyBeingPolled(repo, branch, channelID))
+            if (minutes > 0) //Our converter returns '0' if minutes is invalid.
             {
-                response.sendRepoBranchAlreadyBeingPolled(repo, branch);
-            }
-            else if (minutes > 0) //Our converter returns '0' if minutes is invalid.
-            {
-                Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permenantURL))));
-                t.start();
+                if (existingRecord == null) //Case whereby there is no existing record.
+                {
+                    //No existing record - create a new one.
+                    Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permenantURL))));
+                    t.start();
+                }
+                else
+                {
+                    //Record for this repo and branch already exists.
+                    if (existingRecord.status() == false) //Check if the existing record is active or not.
+                    {
+                    //Re-enable the record and update the time parameter.
+                    existingRecord.setPollingInterval(minutes);
+                    existingRecord.activate();
+                    }
+                    else
+                    {
+                        //Repo and branch for this channel is already being polled  and is active - tell the user.
+                        response.sendRepoBranchAlreadyBeingPolled(repo, branch);
+                    }
+                }
             }
             else
             {
                 response.sendInvalidParameters(ConstantUtils.INVALID_TIME_PARAMETER);
             }
+
         }
     }
 

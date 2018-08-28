@@ -16,4 +16,20 @@ public class PollingRecord {
         this.active = active;
         this.sn = sn;
     }
+    public void deactivate()
+    {
+        this.active = false;
+    }
+    public void activate()
+    {
+        this.active = true;
+    }
+    public boolean status()
+    {
+        return this.active;
+    }
+    public void setPollingInterval(int time)
+    {
+        this.poll = time * 60000;
+    }
 }

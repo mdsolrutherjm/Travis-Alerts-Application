@@ -39,5 +39,19 @@ public class LastBuild {
     Date finished_at;
     @JsonProperty("private")
     boolean priv;
+    @JsonProperty("commit")
+    commit commit;
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public class commit{
+        @JsonProperty("author")
+        author author;
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public class author{
+            @JsonProperty("name")
+            String name;
+        }
+    }
 
 }

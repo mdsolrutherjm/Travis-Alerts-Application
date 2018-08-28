@@ -86,10 +86,10 @@ public class MainService implements Runnable {
             String buildURLTemplate = "https://travis-ci.com/%s/builds/%d";
             String branchURL = String.format(buildURLTemplate, branch.repository.slug, branch.lastBuild.id);
             if (branch.lastBuild.state.equals("passed")) {
-                sn.sendPassed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL );
+                sn.sendPassed(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL );
             }
             else if (branch.lastBuild.state.equals("failed")) {
-                sn.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, "Jack Gannon", branch.lastBuild.started_at.toString(), branchURL);
+                sn.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL);
             }
         }
         catch(HttpClientErrorException|UnsupportedEncodingException e)
@@ -116,7 +116,7 @@ public class MainService implements Runnable {
         repo = URLEncoder.encode(repo, URL_ENCODING);
         branch = URLEncoder.encode(branch, URL_ENCODING);
 
-        UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl("https://api.travis-ci.com").path("/repo/" + repo +"/branch/" + branch);
+        UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl("https://api.travis-ci.com").path("/repo/" + repo +"/branch/" + branch).queryParam("include","build.commit");
         UriComponents components = uri.build(true);
 
         //Set Headers for request.

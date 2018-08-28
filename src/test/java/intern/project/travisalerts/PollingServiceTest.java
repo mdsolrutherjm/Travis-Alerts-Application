@@ -54,9 +54,10 @@ public class PollingServiceTest {
         String repo = "mdsol/ract_ui";
         String branch = "codacy-integration";
         int pollMin = 1;
-        String room = "https://hooks.slack.com/services/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";
+        String room = "https://hooks.slack.com/services/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";
 
         MainService ms = new MainService(new PollingRecord(repo,branch,"fake", pollMin, false,new SlackNotifier(room)));
+
         try
         {
             System.out.println(ms.getAPIStringResponse(repo,branch));

@@ -1,11 +1,8 @@
 package intern.project.travisalerts;
 
-import org.apache.tomcat.util.bcel.Const;
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import java.util.Iterator;
 
 @RestController
 @RequestMapping("/command")
@@ -107,7 +104,7 @@ public class SlackRequestController implements Runnable {
 
         if (parameter.length != 2)
         {
-            response.sendInvalidParameters(ConstantUtils.USAGE_START_POLLING);
+            response.sendInvalidParameters(ConstantUtils.USAGE_STOP_POLLING);
         }
         else
         {

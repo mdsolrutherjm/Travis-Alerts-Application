@@ -201,6 +201,20 @@ public class DataController {
         }
         return false;
     }
+
+    /**
+     * Removes the specified record from the Array List.
+     *
+     * WARNING: Do NOT use this to terminate a Polling Service.
+     *          This should be invoked by MainService ONLY once it has left the while loop.
+     *          To safely terminate a Polling Service, see 'cancelPollingRecord()'
+     *
+     * @param record The record to be removed from the Array List.
+     */
+    public void removePollingRecordFromArray(PollingRecord record)
+    {
+        pollingData.remove(record);
+    }
     public void writePollingRecordToDisk()
     {
         try

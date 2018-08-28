@@ -3,6 +3,7 @@ package intern.project.travisalerts;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import sun.applet.Main;
 
 @RestController
 @RequestMapping("/command")
@@ -81,12 +82,17 @@ public class SlackRequestController implements Runnable {
                 else
                 {
                     //Record for this repo and branch already exists.
-                    if (existingRecord.status() == false) //Check if the existing record is active or not.
+                    if (existingRecord.status() == false) //Case whereby the record has been set to false, but the
+                                                        // associated thread hasn't woken up yet so it hasn't been terminated yet.
                     {
                     //Re-enable the record and update the time parameter, then load a new thread for this record.
                     existingRecord.setPollingInterval(minutes);
                     existingRecord.activate();
-                    new Thread(new MainService(existingRecord)).start();
+
+                    //When we activate a record, it won't poll until its' associated thread wakes up.
+                        // This gets around the issue by doing a one-off additional poll.
+                    MainService immediateResponse =  new MainService(repo, branch, new SlackNotifier(permenantURL));
+                    immediateResponse.pollAndNotify();
                     }
                     else
                     {

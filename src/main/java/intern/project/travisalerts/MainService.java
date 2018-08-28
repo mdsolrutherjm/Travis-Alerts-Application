@@ -68,6 +68,9 @@ public class MainService implements Runnable {
                 System.exit(1);
             }
         }
+        //Since we have left the while loop, a user must have deactivated this polling service.
+        //Remove this record from the DataController.
+        TravisAlertsApplication.dc.removePollingRecordFromArray(pollingRecord);
     }
 
     /**

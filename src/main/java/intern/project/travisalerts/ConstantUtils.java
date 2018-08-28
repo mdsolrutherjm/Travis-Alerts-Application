@@ -44,4 +44,5 @@ public class ConstantUtils {
             "    |_||_|   \\__,_|  \\_/  |_||___/ /_/    \\_\\|_| \\___||_|    \\__||___/\n" +
             "                                                                      \n" +
             "                                                                      \n";
+    public static final String AUTHOR = "An intern project by Jack Gannon and James Rutherford\n\n\n";
 }

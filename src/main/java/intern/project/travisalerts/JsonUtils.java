@@ -13,9 +13,8 @@ public class JsonUtils {
             branch = objectMapper.readValue(inputJson, Branch.class);
         }
         catch (IOException e){
-
+            System.out.println(e);
         }
-        //System.out.println(branch.name + branch.defaultBranch +branch.existsOnGithub);
         return branch;
     }
 

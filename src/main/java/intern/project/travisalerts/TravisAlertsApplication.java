@@ -7,20 +7,25 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class TravisAlertsApplication {
-    public static DataController dc = new DataController(); //Load in any saved-state configuration.
+
+    //The DataController manages all of the records in relation to the channels and the repo/branches to poll
+    public static DataController dc = new DataController();
+    //The SystemConfiguration holds API tokens required for this application to interact with Slack and Travis-CI.
+    public static SystemConfiguration config = new SystemConfiguration();
+
+    //Program state is to keep a while-loop alive for the terminal-based commands.
     static boolean programState = true;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TravisAlertsApplication.class, args);
 
-        Scanner inputListener = new Scanner(System.in);
-        String arg0;
 
 
         //Run a health check to ensure that all of the environment variables have been loaded correctly.
-        if (areAnyEnvironmentVariablesMissing())
+        if (config.areAnyEnvironmentVariablesMissing())
         {
             System.out.println(ConstantUtils.MISSING_ENV_VARIABLE);
+            //System is missing data required to communicate to Slack/Travis so terminate now.
             System.exit(1);
         }
 
@@ -31,7 +36,12 @@ public class TravisAlertsApplication {
             new Thread(new MainService(record)).start(); //Create a new polling service for each record.
         }
 
-        //start accepting terminal text-based commands.
+        //Accept user input now.
+        Scanner inputListener = new Scanner(System.in);
+        //'arg0' is the command that the user types into the terminal.
+        String arg0;
+
+        //start responding to terminal text-based commands.
 		while (programState)
         {
             System.out.print("Travis Alerts > ");
@@ -39,7 +49,7 @@ public class TravisAlertsApplication {
             switch(arg0)
             {
                 case "exit":
-                    System.exit(0);
+                    programState = false;
                     break;
                 case "help":
                     help();
@@ -47,22 +57,14 @@ public class TravisAlertsApplication {
             }
         }
 	}
+
+    /**
+     * Prints to terminal a list of the available commands for terminal-based interaction.
+     */
 	public static void help()
     {
         System.out.println("Commands: \nExit        Terminates Travis Alerts safely. ");
     }
 
-    /**
-     * Checks that all the required Environment Variables are loaded.
-     */
-    public static boolean areAnyEnvironmentVariablesMissing()
-    {
-         Map<String, String> env = System.getenv();
 
-        if ((env.get(ConstantUtils.ENV_TRAVIS_TOKEN) == null) || (env.get(ConstantUtils.ENV_CLIENT_ID) == null) || (env.get(ConstantUtils.ENV_CLIENT_SECRET) == null))
-        {
-            return true;
-        }
-        return false;
-    }
 }

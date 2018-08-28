@@ -14,14 +14,9 @@ import java.util.Map;
 
 public class MainService implements Runnable {
 
-
-
-    //TRAVIS AUTHORIZATION
-    static Map<String, String> env = System.getenv();
-    private static String TRAVIS_AUTH_TOKEN = env.get(ConstantUtils.ENV_TRAVIS_TOKEN);
-
     //SLACK ROOM. This is used to send messages to the Slack channel associated with this MainService thread.
     PollingRecord pollingRecord;
+
     //ENCODING
     private final String URL_ENCODING = "UTF-8";
 
@@ -51,13 +46,6 @@ public class MainService implements Runnable {
         repo = pr.repo;
         branch = pr.branch;
         sn = pr.sn;
-
-        //Check if we have a Travis token. If not, send an error message.
-        if (TRAVIS_AUTH_TOKEN == null)
-        {
-            System.out.println(
-                    String.format(ConstantUtils.MISSING_ENV_VARIABLE, ConstantUtils.ENV_TRAVIS_TOKEN));
-        }
     }
 
     /**
@@ -129,7 +117,7 @@ public class MainService implements Runnable {
         UriComponents components = uri.build(true);
 
         //Set Headers for request.
-        headers.set("Authorization", "token " + TRAVIS_AUTH_TOKEN);
+        headers.set("Authorization", "token " + TravisAlertsApplication.config.travisToken());
         headers.set("Travis-API-Version","3");
         headers.set("User-Agent", "application/API Explorer");
         HttpEntity entity = new HttpEntity(headers);

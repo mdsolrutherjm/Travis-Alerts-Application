@@ -116,6 +116,25 @@ public class DataController {
     }
 
     /**
+     * Sometimes channels are re-configured and Slack will generate a new channel URL. This method deals with this event and will update an existing channel record
+     * with the new channel URL.
+     * @param id ID of the channel record to perform the operation upon.
+     * @param newUrl The new URL to update the record with
+     * @return True if the operation was successful.
+     */
+    public boolean changeChannelURL(String id, String newUrl)
+    {
+        for (ChannelRecord channel: channelData)
+        {
+            if (channel.id.contains(id))
+            {
+                channel.url = newUrl;
+                return true; //Record was found and updated.
+            }
+        }
+        return false; //Record wasn't found.
+    }
+    /**
      * Takes in the parameters to create a new polling record, creates it and returns the address of it.
      * @return the PollingRecord object reference.
      */

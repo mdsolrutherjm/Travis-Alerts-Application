@@ -75,7 +75,18 @@ public class WebRequestController {
                 return slackConfigError("Channel Information couldn't be retrieved. Is Slack alive? Check that the " + ConstantUtils.ENV_CLIENT_ID + ", " + ConstantUtils.ENV_CLIENT_SECRET + ", " + ConstantUtils.ENV_TRAVIS_TOKEN + " settings are accurate on the server-side.  ");
             }
             else{
-                TravisAlertsApplication.dc.addChannel(slackAuth.incomingWebhook.channelID, slackAuth.incomingWebhook.channelURL);
+                //Validation checks have passed - perform the actual operation now.
+
+                if (TravisAlertsApplication.dc.getChannelURL(slackAuth.incomingWebhook.channelID) == null)
+                {
+                    //This channel ID hasn't been added before - create a new record for it.
+                    TravisAlertsApplication.dc.addChannel(slackAuth.incomingWebhook.channelID, slackAuth.incomingWebhook.channelURL);
+                }
+                else
+                {
+                    //This channel ID has been previously configured. Maybe the channel URL has changed so just update that in the existing record.
+                    TravisAlertsApplication.dc.changeChannelURL(slackAuth.incomingWebhook.channelID, slackAuth.incomingWebhook.channelURL);
+                }
                 new SlackNotifier(slackAuth.incomingWebhook.channelURL).sendUsageWithDescription(ConstantUtils.FIRST_TIME_CONFIG_RESPONSE, "startpolling", ConstantUtils.USAGE_START_POLLING);
                 try
                 {

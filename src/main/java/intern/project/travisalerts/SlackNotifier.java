@@ -21,7 +21,7 @@ public class SlackNotifier {
     {
         this.URL = url;
     }
-    private final String CHANNEL_SETUP_LINK = "https://slack.com/oauth/authorize?client_id=" + TravisAlertsApplication.config.clientID() +"&scope=incoming-webhook,commands";
+    private final String CHANNEL_SETUP_LINK = "https://slack.com/oauth/authorize?client_id=%s&scope=incoming-webhook,commands";
     //Template for the passed/failed build description (to go within the template)
     private final String DESCRIPTION = "Build #%d %s (%s, %s)\n%s@%s";
     private final String INVALID_PARAMETERS = "The specified query parameters are invalid. ";
@@ -110,7 +110,7 @@ public class SlackNotifier {
      */
     public void sendSetupNewRoom()
     {
-        sendJson(SETUP_NEW_ROOM);
+        sendJson(String.format(SETUP_NEW_ROOM, TravisAlertsApplication.config.clientID()));
     }
     /**
      * Sends a standard error message for if the polling service returned 404 not found.

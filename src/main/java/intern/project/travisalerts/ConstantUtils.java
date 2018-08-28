@@ -18,6 +18,8 @@ public class ConstantUtils {
 
     //COMMAND USAGES
     public static final String USAGE_START_POLLING = "/startpolling [repo] [branch] [minutes]";
+    public static final String USAGE_STOP_POLLING = "/stoppolling [repo] [branch]";
+
     public static final String USAGE_GET_STATUS = "/getstatus [repo] [branch]";
     public static final String FIRST_TIME_CONFIG_RESPONSE = "Hello! I'm Travis Alerts. I keep this channel notified of any specified GitHub branches that are in failed state on Travis-CI. To get started, type the command below.";
 

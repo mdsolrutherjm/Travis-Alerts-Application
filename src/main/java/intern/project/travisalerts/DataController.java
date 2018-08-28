@@ -153,11 +153,11 @@ public class DataController {
      * @param channelID the ID of the channel
      * @return true if it already exists.
      */
-    public boolean isChannelAlreadyConfigured(String channelID, String channelURL)
+    public boolean isChannelAlreadyConfigured(String channelID)
     {
         for (ChannelRecord record: channelData)
         {
-            if ((record.id.contains(channelID)) && (record.url.contains(channelURL)))
+            if ((record.id.contains(channelID)))
             {
                 return true;
             }

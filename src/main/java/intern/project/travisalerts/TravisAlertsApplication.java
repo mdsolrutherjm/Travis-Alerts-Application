@@ -2,7 +2,6 @@ package intern.project.travisalerts;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import java.util.Map;
 import java.util.Scanner;
 
 @SpringBootApplication
@@ -49,7 +48,7 @@ public class TravisAlertsApplication {
             switch(arg0)
             {
                 case "exit":
-                    programState = false;
+                    System.exit(0);
                     break;
                 case "help":
                     help();

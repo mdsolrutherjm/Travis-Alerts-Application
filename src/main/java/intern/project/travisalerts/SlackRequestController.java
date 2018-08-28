@@ -1,11 +1,8 @@
 package intern.project.travisalerts;
 
-import org.apache.tomcat.util.bcel.Const;
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import java.util.Iterator;
 
 @RestController
 @RequestMapping("/command")
@@ -60,14 +57,12 @@ public class SlackRequestController implements Runnable {
 
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
-        //attempt to get the permanent URL of the channel invoking this method.
-        String permanentURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
-
-        //Validation checks - do we have all of the required parameters?
-        if (permanentURL == null) //do we have a permanent room URL??
+        //Validation checks - is the channel configured?
+        if (TravisAlertsApplication.dc.isChannelAlreadyConfigured(channelID) == false) //Is the channel that we're working on already configured?
         {
-            response.sendSetupNewRoom(); // no room set-up - send an error message.
+            //Channel not configured - stop this operation now and tell the user to configure the channel.
+            response.sendSetupNewRoom();
         }
         else if (parameter.length != 3)
         {
@@ -78,6 +73,7 @@ public class SlackRequestController implements Runnable {
             String repo = parameter[0];
             String branch = parameter[1];
             int minutes = convertToInteger(parameter[2]);
+            String permenantURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
             //Validation checks - has this repo/branch already been configured?
             if (TravisAlertsApplication.dc.isRepoBranchAlreadyBeingPolled(repo, branch, channelID))
@@ -86,7 +82,7 @@ public class SlackRequestController implements Runnable {
             }
             else if (minutes > 0) //Our converter returns '0' if minutes is invalid.
             {
-                Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permanentURL))));
+                Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permenantURL))));
                 t.start();
             }
             else
@@ -104,10 +100,17 @@ public class SlackRequestController implements Runnable {
 
         String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
 
-
-        if (parameter.length != 2)
+        //Validation checks - is the channel configured?
+        if (TravisAlertsApplication.dc.isChannelAlreadyConfigured(channelID) == false)
         {
-            response.sendInvalidParameters(ConstantUtils.USAGE_START_POLLING);
+            //Channel not configured - stop this operation now and tell the user to configure the channel.
+            response.sendSetupNewRoom();
+        }
+        //Validation checks - do we have the right number of parameters?
+        else if (parameter.length != 2)
+        {
+            //Missing or too many parameters - stop and inform the user.
+            response.sendInvalidParameters(ConstantUtils.USAGE_STOP_POLLING);
         }
         else
         {

@@ -66,6 +66,9 @@ public class SlackRequestController implements Runnable {
             int minutes = convertToInteger(parameter[2]);
             String permenantURL = TravisAlertsApplication.dc.getChannelURL(channelID);
 
+            //Create a new Slack Notifier for the new permenant URL!
+            SlackNotifier sn = new SlackNotifier(permenantURL);
+
             //Find any existing record which matches the specified repo and branch for this channel.
             PollingRecord existingRecord = TravisAlertsApplication.dc.getPollingRecord(repo, branch, channelID);
 
@@ -75,8 +78,10 @@ public class SlackRequestController implements Runnable {
                 if (existingRecord == null) //Case whereby there is no existing record.
                 {
                     //No existing record - create a new one.
-                    Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, new SlackNotifier(permenantURL))));
+                    Thread t = new Thread(new MainService(TravisAlertsApplication.dc.createPollingRecord(repo, branch, channelID, minutes * 60000,true, sn)));
                     t.start();
+                    sn.sendStartingPolling(repo, branch);
+
                 }
                 else
                 {
@@ -87,6 +92,7 @@ public class SlackRequestController implements Runnable {
                     //Re-enable the record and update the time parameter, then load a new thread for this record.
                     existingRecord.setPollingInterval(minutes);
                     existingRecord.activate();
+                    sn.sendStartingPolling(repo, branch);
 
                     //When we activate a record, it won't poll until its' associated thread wakes up.
                         // This gets around the issue by doing a one-off additional poll.

@@ -23,6 +23,8 @@ public class SlackNotifier {
     private final String CHANNEL_SETUP_LINK = "https://slack.com/oauth/authorize?client_id=%s&scope=incoming-webhook,commands";
     //Template for the passed/failed build description (to go within the template)
     private final String DESCRIPTION = "Build #%d %s (Initiated by %s, %s)\n%s@%s";
+    private final String COMMENCING_POLLING = "Travis Alerts is now notifying this channel of failed builds within %s@%s!";
+
     private final String INVALID_PARAMETERS = "The specified query parameters are invalid. ";
     //Template for the passed/failed build messages.
     private final String BUILD_TEMPLATE = "{\n" +
@@ -100,7 +102,10 @@ public class SlackNotifier {
         String json = String.format(BUILD_TEMPLATE, buildURL,FAILED_COLOUR, failedDescription, buildURL);
         sendJson(json);
     }
-
+    public void sendStartingPolling(String repo, String branch) {
+        String text = String.format(COMMENCING_POLLING, repo, branch);
+        sendText(text);
+    }
     /**
      * Sends a properly formatted build passed message to the pre-set Slack channel.
      */

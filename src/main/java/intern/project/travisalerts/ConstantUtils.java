@@ -6,6 +6,8 @@ public class ConstantUtils {
     public static final String FILE_CHANNEL_RECORD = "channelRecords.csv";
     public static final String FILE_SYSTEM_CONFIGURATION = "configuration.csv";
 
+    //POLLING LIMIT
+    public static final int LOWER_POLLING_LIMIT = 2; //This sets the polling limit so that it cannot be any lower than this value.
 
     //ENVIRONMENT VARIABLES - NAMES.
     public static final String ENV_CLIENT_ID = "TRAVIS_ALERTS_CLIENT_ID";
@@ -30,7 +32,7 @@ public class ConstantUtils {
     public static final String FAILED_IOEX_WRITING_FILE = "ERROR: Encountered IO Exception when writing to %s. Full error is provided below. \n(%s)";
     public static final String FAILED_MISSING_FILE = "ERROR: Could not find %s. This is OK if this is a clean-boot. ";
     public static final String TERMINATING_POLLING_ERROR = "Could not terminate %s@%s. Are you sure it was configured to be polled? ";
-    public static final String INVALID_TIME_PARAMETER = "The [minute] parameter was not valid. \n" + USAGE_START_POLLING;
+    public static final String INVALID_TIME_PARAMETER = "The [minute] parameter must be a numerical, whole value greater than '2'. \n" + USAGE_START_POLLING;
 
 
     //OTHER

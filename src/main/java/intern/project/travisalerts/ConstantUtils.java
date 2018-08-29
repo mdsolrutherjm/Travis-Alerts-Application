@@ -9,6 +9,9 @@ public class ConstantUtils {
     //POLLING LIMIT
     public static final int LOWER_POLLING_LIMIT = 2; //This sets the polling limit so that it cannot be any lower than this value.
 
+    //BOOT-up polling services initation cooldown
+    public static final int POLLING_SVC_START_COOLDOWN = 20; //milliseconds between starting each thread.
+
     //ENVIRONMENT VARIABLES - NAMES.
     public static final String ENV_CLIENT_ID = "TRAVIS_ALERTS_CLIENT_ID";
     public static final String ENV_CLIENT_SECRET = "TRAVIS_ALERTS_CLIENT_SECRET";
@@ -33,7 +36,7 @@ public class ConstantUtils {
     public static final String FAILED_MISSING_FILE = "ERROR: Could not find %s. This is OK if this is a clean-boot. ";
     public static final String TERMINATING_POLLING_ERROR = "Could not terminate %s@%s. Are you sure it was configured to be polled? ";
     public static final String INVALID_TIME_PARAMETER = "The [minute] parameter must be a numerical, whole value greater than '2'. \n" + USAGE_START_POLLING;
-
+    public static final String FAILED_INTERVAL_START_UP_POLLING_SVCS = "ERROR: Travis Alerts was unable to start up all of the polling service threads. \n%s";
 
     //OTHER
     public static final String TERMINATING_POLLING = "Terminating %s@%s";

@@ -30,10 +30,19 @@ public class TravisAlertsApplication {
 
 
         //Create new threads for the loaded PollingRecords.
-        for (PollingRecord record: dc.getPollingRecords())
+        try
         {
-            new Thread(new MainService(record)).start(); //Create a new polling service for each record.
+            for (PollingRecord record: dc.getPollingRecords())
+            {
+                Thread.sleep(ConstantUtils.POLLING_SVC_START_COOLDOWN);
+                new Thread(new MainService(record)).start(); //Create a new polling service for each record.
+            }
         }
+        catch (InterruptedException e)
+        {
+            System.out.println(String.format(ConstantUtils.FAILED_INTERVAL_START_UP_POLLING_SVCS, e.toString()));
+        }
+
 
         //Accept user input now.
         Scanner inputListener = new Scanner(System.in);

@@ -70,7 +70,7 @@ public class SlackRequestController implements Runnable {
             PollingRecord existingRecord = TravisAlertsApplication.dc.getPollingRecord(repo, branch, channelID);
 
             //Validation checks - has this repo/branch already been configured?
-            if (minutes > 0) //Our converter returns '0' if minutes is invalid.
+            if (minutes > ConstantUtils.LOWER_POLLING_LIMIT) //Our converter returns '0' if minutes is invalid and the minutes value must also be greater than our lower limit.
             {
                 if (existingRecord == null) //Case whereby there is no existing record.
                 {

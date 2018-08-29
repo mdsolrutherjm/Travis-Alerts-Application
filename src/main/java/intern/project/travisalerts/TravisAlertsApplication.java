@@ -30,6 +30,7 @@ public class TravisAlertsApplication {
 
 
         //Create new threads for the loaded PollingRecords.
+        System.out.println("Starting loading each Polling Service record. ");
         try
         {
             for (PollingRecord record: dc.getPollingRecords())
@@ -42,6 +43,8 @@ public class TravisAlertsApplication {
         {
             System.out.println(String.format(ConstantUtils.FAILED_INTERVAL_START_UP_POLLING_SVCS, e.toString()));
         }
+        System.out.println("Loaded all Polling Service records. ");
+
 
 
         //Accept user input now.

@@ -59,7 +59,7 @@ public class MainService implements Runnable {
         {
             try
             {
-                pollingRecord.active = pollAndNotify();
+                pollingRecord.active = pollAndNotify(false);
                 Thread.sleep(pollingRecord.poll);
             }
             catch(InterruptedException e)
@@ -75,9 +75,10 @@ public class MainService implements Runnable {
 
     /**
      * Polls Travis, returns to Slack with passed/failed state.
+     * @param sendingPassedState true if this method should send passed/started state
      * @return false if a fatal error occurred.
      */
-    public boolean pollAndNotify()
+    public boolean pollAndNotify(boolean sendingPassedState)
     {
         try
         {
@@ -85,11 +86,14 @@ public class MainService implements Runnable {
             Branch branch = JsonUtils.deserializeJson(JsonObject);
             String buildURLTemplate = "https://travis-ci.com/%s/builds/%d";
             String branchURL = String.format(buildURLTemplate, branch.repository.slug, branch.lastBuild.id);
-            if (branch.lastBuild.state.equals("passed")) {
+            if ((branch.lastBuild.state.equals("passed")) && sendingPassedState) {
                 sn.sendPassed(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL );
             }
             else if (branch.lastBuild.state.equals("failed")) {
                 sn.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL);
+            }
+            else if ((branch.lastBuild.state.equals("started")) && sendingPassedState) {
+                sn.sendStarted(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL);
             }
         }
         catch(HttpClientErrorException|UnsupportedEncodingException e)

@@ -34,7 +34,7 @@ public class SlackRequestController implements Runnable {
             String repo = parameter[0]; //repo = first parameter
             String branch = parameter[1]; //branch = second parameter
             MainService ms = new MainService(repo,branch, response);
-            ms.pollAndNotify();
+            ms.pollAndNotify(true);
         }
     }
 
@@ -91,7 +91,7 @@ public class SlackRequestController implements Runnable {
                     //When we activate a record, it won't poll until its' associated thread wakes up.
                         // This gets around the issue by doing a one-off additional poll.
                     MainService immediateResponse =  new MainService(repo, branch, new SlackNotifier(permenantURL));
-                    immediateResponse.pollAndNotify();
+                    immediateResponse.pollAndNotify(false);
                     }
                     else
                     {

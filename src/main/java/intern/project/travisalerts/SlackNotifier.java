@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 public class SlackNotifier {
+    private final String STARTED_COLOUR = "#f9d616";
     private final String PASSED_COLOUR = "#36a64f";
     private final String FAILED_COLOUR = "#ff0000";
     private String URL;
@@ -109,7 +110,15 @@ public class SlackNotifier {
         String json = String.format(BUILD_TEMPLATE, buildURL,PASSED_COLOUR, passedDescription, buildURL);
         sendJson(json);
     }
+    /**
+     * Sends a properly formatted build started message to the pre-set Slack channel.
+     */
+    public void sendStarted(int buildID, String slug, String branch, String  by, String time, String buildURL) {
+        String passedDescription = String.format(DESCRIPTION, buildID, "started", by, time, slug, branch);
 
+        String json = String.format(BUILD_TEMPLATE, buildURL,STARTED_COLOUR, passedDescription, buildURL);
+        sendJson(json);
+    }
     /**
      * Sends a standard text message to the pre-set Slack channel.
      * @param text text to be contained within the message.

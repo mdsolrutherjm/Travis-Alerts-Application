@@ -1,7 +1,6 @@
 package intern.project.travisalerts;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import sun.applet.Main;
 
 public class Branch {
 

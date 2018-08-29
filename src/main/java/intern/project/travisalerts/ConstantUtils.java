@@ -4,7 +4,6 @@ public class ConstantUtils {
     //FILE NAMES
     public static final String FILE_POLLING_RECORD = "pollingRecords.csv";
     public static final String FILE_CHANNEL_RECORD = "channelRecords.csv";
-    public static final String FILE_SYSTEM_CONFIGURATION = "configuration.csv";
 
     //POLLING LIMIT
     public static final int LOWER_POLLING_LIMIT = 2; //This sets the polling limit so that it cannot be any lower than this value.

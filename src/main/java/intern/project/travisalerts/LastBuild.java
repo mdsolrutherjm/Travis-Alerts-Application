@@ -1,12 +1,9 @@
 package intern.project.travisalerts;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.apache.tomcat.jni.Local;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LastBuild {

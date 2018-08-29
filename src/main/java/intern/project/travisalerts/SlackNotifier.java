@@ -103,8 +103,8 @@ public class SlackNotifier {
         sendJson(json);
     }
     public void sendStartingPolling(String repo, String branch) {
-        String json = String.format(COMMENCING_POLLING, repo, branch);
-        sendJson(json);
+        String text = String.format(COMMENCING_POLLING, repo, branch);
+        sendText(text);
     }
     /**
      * Sends a properly formatted build passed message to the pre-set Slack channel.

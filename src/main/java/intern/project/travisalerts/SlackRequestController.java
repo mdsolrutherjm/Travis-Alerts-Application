@@ -3,7 +3,6 @@ package intern.project.travisalerts;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import sun.applet.Main;
 
 @RestController
 @RequestMapping("/command")
@@ -54,7 +53,7 @@ public class SlackRequestController implements Runnable {
         if (TravisAlertsApplication.dc.isChannelAlreadyConfigured(channelID) == false) //Is the channel that we're working on already configured?
         {
             //Channel not configured - stop this operation now and tell the user to configure the channel.
-            response.sendSetupNewRoom();
+            response.errorSendSetupNewRoom();
         }
         else if (parameter.length != 3)
         {
@@ -121,7 +120,7 @@ public class SlackRequestController implements Runnable {
         if (TravisAlertsApplication.dc.isChannelAlreadyConfigured(channelID) == false)
         {
             //Channel not configured - stop this operation now and tell the user to configure the channel.
-            response.sendSetupNewRoom();
+            response.errorSendSetupNewRoom();
         }
         //Validation checks - do we have the right number of parameters?
         else if (parameter.length != 2)
@@ -142,6 +141,18 @@ public class SlackRequestController implements Runnable {
                 response.sendText(String.format(ConstantUtils.TERMINATING_POLLING_ERROR, repo,branch));
             }
         }
+    }
+    @RequestMapping(value ="/configure", consumes = CONSUMES)
+    public void configure(WebRequest request)
+    {
+        String channelID = request.getParameter("channel_id");
+        SlackNotifier response = new SlackNotifier(request.getParameter("response_url"));
+
+        String[] parameter = request.getParameter("text").split(" "); //Array of each parameter sent.
+
+        response.sendSetupNewRoom();
+
+
     }
 
     /**

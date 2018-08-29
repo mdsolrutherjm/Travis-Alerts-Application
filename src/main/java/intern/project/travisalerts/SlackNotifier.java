@@ -8,8 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.table.TableRowSorter;
-
 
 public class SlackNotifier {
     private final String PASSED_COLOUR = "#36a64f";
@@ -42,11 +40,26 @@ public class SlackNotifier {
             "        }\n" +
             "    ]\n" +
             "}";
-    private final String SETUP_NEW_ROOM = "{\n" +
+    private final String ERROR_SETUP_NEW_ROOM = "{\n" +
             "    \"text\": \"You have not set up this channel for Travis Alerts! \\n Click the button below to begin the setup.\",\n" +
             "    \"attachments\": [\n" +
             "        {\n" +
             "            \"fallback\": \"You have not set up this Channel for Travis Alerts! \\n Click the button below to begin the setup.\",\n" +
+            "            \"actions\": [\n" +
+            "                {\n" +
+            "                    \"type\": \"button\",\n" +
+            "                    \"text\": \"Set up Travis Alerts\",\n" +
+            "                    \"url\": \""+CHANNEL_SETUP_LINK+"\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+    private final String SETUP_NEW_ROOM = "{\n" +
+            "    \"text\": \"Click the button below to set up this channel for Travis Alerts!\",\n" +
+            "    \"attachments\": [\n" +
+            "        {\n" +
+            "            \"fallback\": \"Click the button below to set up this channel for Travis Alerts!\",\n" +
             "            \"actions\": [\n" +
             "                {\n" +
             "                    \"type\": \"button\",\n" +
@@ -106,12 +119,20 @@ public class SlackNotifier {
         sendJson("{\"text\":\""+text+"\"}");
     }
     /**
-     * Sends a standard text message to set up a new room.
+     * Sends a standard text message to set up a new room for when they have tried to submit a command on a non-configured room.
+     */
+    public void errorSendSetupNewRoom()
+    {
+        sendJson(String.format(ERROR_SETUP_NEW_ROOM, TravisAlertsApplication.config.clientID()));
+    }
+    /**
+     * Sends a standard text message to set up a new room
      */
     public void sendSetupNewRoom()
     {
         sendJson(String.format(SETUP_NEW_ROOM, TravisAlertsApplication.config.clientID()));
     }
+
     /**
      * Sends a standard error message for if the polling service returned 404 not found.
      */

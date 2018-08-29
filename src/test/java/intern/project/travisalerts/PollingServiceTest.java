@@ -16,7 +16,7 @@ public class PollingServiceTest {
     public void validRequestStMgDevelop()
     {
         String repo = "mdsol/study_management";
-        String branch = "develop";
+        String branch = "feature/MCC-415815_mock_actual_contract_correction";
         int pollMin = 1;
         String room =  "https://hooks.slack.com/services/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";
 

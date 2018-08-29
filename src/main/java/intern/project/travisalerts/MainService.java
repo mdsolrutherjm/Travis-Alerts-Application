@@ -75,6 +75,7 @@ public class MainService implements Runnable {
 
     /**
      * Polls Travis, returns to Slack with passed/failed state.
+     * @param sendingPassedState true if this method should send passed/started state
      * @return false if a fatal error occurred.
      */
     public boolean pollAndNotify(boolean sendingPassedState)
@@ -91,8 +92,8 @@ public class MainService implements Runnable {
             else if (branch.lastBuild.state.equals("failed")) {
                 sn.sendFailed(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL);
             }
-            else if (branch.lastBuild.state.equals("passing")) {
-                sn.sendPassed(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL);
+            else if ((branch.lastBuild.state.equals("started")) && sendingPassedState) {
+                sn.sendStarted(branch.lastBuild.number, branch.repository.slug, branch.name, branch.lastBuild.commit.author.name, branch.lastBuild.started_at.toString(), branchURL);
             }
         }
         catch(HttpClientErrorException|UnsupportedEncodingException e)

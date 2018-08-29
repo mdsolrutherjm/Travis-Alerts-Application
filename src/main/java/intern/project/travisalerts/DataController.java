@@ -2,6 +2,7 @@ package intern.project.travisalerts;
 
 import java.io.*;
 import java.util.ArrayList;
+
 import static intern.project.travisalerts.ConstantUtils.*;
 
 public class DataController {

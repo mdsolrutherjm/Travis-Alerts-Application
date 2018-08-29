@@ -3,9 +3,6 @@ package intern.project.travisalerts;
 //3. Jackson Deserialization Annotations
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 public class Repository {
